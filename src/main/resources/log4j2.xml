@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration packages="com.sda.*" status="INFO">
+    <Appenders>
+
+        <Console name="ConsoleAppender" target="SYSTEM_OUT">
+            <PatternLayout pattern="%style{%date{DEFAULT}}{yellow} %highlight{%-5level}{FATAL=bg_red, ERROR=red,
+            WARN=yellow, INFO=green} %message \n"/>
+        </Console>
+
+        <Console name="ConsoleRedAppender" target="SYSTEM_OUT">
+            <PatternLayout pattern="%style{%message}{red}%n"/>
+            <MarkerFilter marker="CONN_TRACE"/>
+        </Console>
+
+        <Console name="ConsoleGreenAppender" target="SYSTEM_OUT">
+            <PatternLayout pattern="%style{userId=%X{userId}:}{white} %style{%message}{green} \n"/>
+        </Console>
+
+    </Appenders>
+
+    <Loggers>
+
+        <Logger name="CONSOLE_PATTERN_APPENDER_MARKER" level="INFO" additivity="false">
+            <AppenderRef ref="ConsoleRedAppender"/>
+            <AppenderRef ref="ConsoleGreenAppender"/>
+        </Logger>
+
+        <Root level="INFO">
+            <AppenderRef ref="ConsoleAppender"/>
+        </Root>
+
+    </Loggers>
+</Configuration>
