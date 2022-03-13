@@ -14,7 +14,7 @@ public class Main {
     private double temp;
 
     @SerializedName("temp_min")
-    private int tempMin;
+    private double tempMin;
 
     @SerializedName("humidity")
     private int humidity;
