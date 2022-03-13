@@ -1,12 +1,18 @@
 package jsonModel;
 
 import com.google.gson.annotations.SerializedName;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-public class Coord{
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+public class Coord {
 
-	@SerializedName("lon")
-	private double lon;
+    @SerializedName("lon")
+    private double lon;
 
-	@SerializedName("lat")
-	private double lat;
+    @SerializedName("lat")
+    private double lat;
 }

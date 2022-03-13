@@ -1,24 +1,30 @@
 package jsonModel;
 
 import com.google.gson.annotations.SerializedName;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-public class Main{
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+public class Main {
 
-	@SerializedName("temp")
-	private double temp;
+    @SerializedName("temp")
+    private double temp;
 
-	@SerializedName("temp_min")
-	private int tempMin;
+    @SerializedName("temp_min")
+    private int tempMin;
 
-	@SerializedName("humidity")
-	private int humidity;
+    @SerializedName("humidity")
+    private int humidity;
 
-	@SerializedName("pressure")
-	private int pressure;
+    @SerializedName("pressure")
+    private int pressure;
 
-	@SerializedName("feels_like")
-	private double feelsLike;
+    @SerializedName("feels_like")
+    private double feelsLike;
 
-	@SerializedName("temp_max")
-	private double tempMax;
+    @SerializedName("temp_max")
+    private double tempMax;
 }

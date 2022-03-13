@@ -1,18 +1,24 @@
 package jsonModel;
 
 import com.google.gson.annotations.SerializedName;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-public class WeatherItem{
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+public class WeatherItem {
 
-	@SerializedName("icon")
-	private String icon;
+    @SerializedName("icon")
+    private String icon;
 
-	@SerializedName("description")
-	private String description;
+    @SerializedName("description")
+    private String description;
 
-	@SerializedName("main")
-	private String main;
+    @SerializedName("main")
+    private String main;
 
-	@SerializedName("id")
-	private int id;
+    @SerializedName("id")
+    private int id;
 }
