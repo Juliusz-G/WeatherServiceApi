@@ -28,7 +28,7 @@ public class WeatherDto {
     private Sys sys;
 
     @SerializedName("dt")
-    private int dt;
+    private long dt;
 
     @SerializedName("coord")
     private Coord coord;

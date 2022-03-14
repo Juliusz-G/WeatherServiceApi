@@ -14,10 +14,10 @@ public class Sys {
     private String country;
 
     @SerializedName("sunrise")
-    private int sunrise;
+    private long sunrise;
 
     @SerializedName("sunset")
-    private int sunset;
+    private long sunset;
 
     @SerializedName("id")
     private int id;
