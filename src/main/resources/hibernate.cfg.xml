@@ -32,6 +32,7 @@
         <property name="hibernate.dbcp.maxWaitMillis">-1</property>
 
         <!-- Mappings -->
+        <mapping class="entity.Weather"/>
 
     </session-factory>
 </hibernate-configuration>
