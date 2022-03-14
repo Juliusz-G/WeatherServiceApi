@@ -1,11 +1,11 @@
 package entity;
 
+import jsonModel.WeatherDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,7 +23,7 @@ public class Weather {
     private String cityName;
 
     @Column(name = "date")
-    private LocalDate date;
+    private long date;
 
     @Column(name = "temp_max")
     private double tempMax;
@@ -39,4 +39,14 @@ public class Weather {
 
     @Column(name = "pressure")
     private int pressure;
+
+    public Weather(WeatherDto weatherDto) {
+        this.cityName = weatherDto.getName();
+        this.date = weatherDto.getDt();
+        this.tempMax = weatherDto.getMain().getTempMax();
+        this.tempMin = weatherDto.getMain().getTempMin();
+        this.temp = weatherDto.getMain().getTemp();
+        this.humidity = weatherDto.getMain().getHumidity();
+        this.pressure = weatherDto.getMain().getPressure();
+    }
 }
