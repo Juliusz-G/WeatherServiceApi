@@ -1,39 +1,65 @@
-import dao.WeatherDao;
-import repository.WeatherRepository;
-import repository.WeatherService;
-
 public class UserInterface {
 
-    private final Controller controller = new Controller();
+    private final Controller controllerTwo = new Controller();
 
-    public void menu() {
+    public void mainMenu() {
 
         System.out.println("--WEATHER SERVICE--");
-        int choice = -1;
+        Integer choice = -1;
 
         while (choice != 0) {
-            controller.printMenu();
-            choice = controller.getUserChoice();
+            controllerTwo.printMainMenu();
+            try {
+                choice = controllerTwo.getUserChoice("Enter your choice:", Integer.class);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             switch (choice) {
                 case 0:
                     break;
                 case 1:
-                    controller.addWeatherForGivenLocation();
+                    controllerTwo.addWeatherForGivenCity();
                     break;
                 case 2:
-                    controller.deleteWeatherForGivenLocation();
+                    controllerTwo.deleteWeatherForGivenCity();
                     break;
                 case 3:
-//                    controller.updateWeatherForGivenLocation();
+                    controllerTwo.updateWeatherForGivenCity();
                     break;
                 case 4:
-                    controller.listAllWeathers();
+                    subMenu();
                     break;
-                case 5:
-                    controller.listWeatherForGivenLocationId();
+                default:
+                    System.out.println("*** Enter a number between 0 and 7 ***");
+            }
+        }
+    }
+
+    public void subMenu() {
+
+        Integer choice = -1;
+
+        while (choice != 0) {
+            controllerTwo.printSubmenu();
+            try {
+                choice = controllerTwo.getUserChoice("Enter your choice:", Integer.class);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            switch (choice) {
+                case 0:
                     break;
-                case 6:
-                    controller.listWeatherForGivenLocationCityName();
+                case 1:
+                    controllerTwo.listAllWeathers();
+                    break;
+                case 2:
+                    controllerTwo.findWeatherForGivenWeatherId();
+                    break;
+                case 3:
+                    controllerTwo.findWeatherForGivenCity();
+                    break;
+                case 4:
+                    controllerTwo.findWeatherForGivenCityAndDate();
                     break;
                 default:
                     System.out.println("*** Enter a number between 0 and 5 ***");

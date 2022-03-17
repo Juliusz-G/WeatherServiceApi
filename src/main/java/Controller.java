@@ -1,83 +1,211 @@
 import dao.WeatherDao;
-import entity.Weather;
-import jsonModel.WeatherDto;
+import model.entity.WeatherEntity;
+import model.api.WeatherApi;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import repository.WeatherRepository;
-import repository.WeatherService;
+import service.WeatherRepository;
+import service.WeatherService;
+import service.WeatherTransformer;
 
 import java.util.InputMismatchException;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class Controller {
 
-    private final String currentWeatherApiUrl = "https://api.openweathermap.org/data/2.5/weather?" +
-            "q=%s&appid=baa6ece140be0985d8bf8766fa381d1d&units=metric";
-    private WeatherService weatherService = new WeatherService(new WeatherRepository(), new WeatherDao());
+    private final String API_KEY = "baa6ece140be0985d8bf8766fa381d1d";
+    private final String API_URL = "https://api.openweathermap.org/data/2.5/forecast?q=%s&units=metric&appid=" + API_KEY;
+    private WeatherService weatherService = new WeatherService(
+            new WeatherRepository(),
+            new WeatherDao(),
+            new WeatherTransformer()
+    );
 
-    public void printMenu() {
+    //-----Menu structure-----
+
+    //Main menu
+    public void printMainMenu() {
         System.out.println();
-        System.out.println("========================================");
-        System.out.println("[1] Adding location to DB.");
-        System.out.println("[2] Delete location from DB.");
-        System.out.println("[3] Update location from DB.");
-        System.out.println("[4] List all locations from DB.");
-        System.out.println("[5] Find specific location by ID from DB.");
-        System.out.println("[6] Find specific location by city name from DB.");
+        System.out.println("==========================================================");
+        System.out.println("[1] Add 5-day weather for city.");
+        System.out.println("[2] Delete 5-day weather for city.");
+        System.out.println("[3] Update 5-day weather for city.");
+        System.out.println("[4] Display weather (Submenu).");
         System.out.println("[0] EXIT");
-        System.out.println("========================================");
+        System.out.println("==========================================================");
     }
 
-    public int getUserChoice() {
-        System.out.print("Enter your choice: ");
+    //Submenu
+    public void printSubmenu() {
+        System.out.println();
+        System.out.println("==========================================================");
+        System.out.println("[1] Display all weathers.");
+        System.out.println("[2] Display weather by ID.");
+        System.out.println("[3] Display weather by city.");
+        System.out.println("[4] Display weather by city and date.");
+        System.out.println("[0] BACK");
+        System.out.println("==========================================================");
+    }
+
+    //Gets user input (Any type)
+    public <T> T getUserChoice(String message, Class<T> c) throws Exception {
+        System.out.println(message);
+        Scanner scanner = new Scanner(System.in);
         try {
-            return new Scanner(System.in).nextInt();
+            if (c == Integer.class)
+                return c.cast(scanner.nextInt());
+            if (c == String.class)
+                return c.cast(scanner.nextLine());
         } catch (InputMismatchException e) {
-            return getUserChoice();
+            throw new Exception(e);
         }
+        return null;
     }
 
-    public void addWeatherForGivenLocation() {
-        System.out.println("Enter a location: ");
-        String location = new Scanner(System.in).next();
-        WeatherDto weatherDto = weatherService.getWeatherRepository().getWeatherData(String.format(currentWeatherApiUrl, location));
-        weatherService.getWeatherDao().save(new Weather(weatherDto));
+    //-----Methods available in main menu-----
+
+    //[1] Add 5-day weather for given city
+    public void addWeatherForGivenCity() {
+        String cityName = null;
+
+        try {
+            cityName = getUserChoice("Enter a location: ", String.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        WeatherApi weatherApi = weatherService.getWeatherRepository()
+                .jsonDeserialization(String
+                        .format(API_URL, cityName)
+                );
+
+        weatherService.getWeatherTransformer()
+                .fromDtoToEntity(weatherService.getWeatherTransformer()
+                        .fromApiToDto(weatherApi)
+                )
+                .forEach(w -> weatherService
+                        .getWeatherDao()
+                        .saveOrUpdate(w) //if exists than update
+                );
+        System.out.println(cityName + " successfully added!");
     }
 
-    public void deleteWeatherForGivenLocation() {
-        System.out.println("Enter a location: ");
-        String location = new Scanner(System.in).next();
-        Weather weatherToDelete = weatherService.getWeatherDao().findByCity(location);
-        weatherService.getWeatherDao().delete(weatherToDelete);
+    //[2] Delete 5-day weather for given city
+    public void deleteWeatherForGivenCity() {
+        displayDistinctCityNames();
+        String cityName = null;
+
+        try {
+            cityName = getUserChoice("Enter a location: ", String.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        weatherService.getWeatherDao()
+                .findByCity(cityName)
+                .forEach(w -> weatherService
+                        .getWeatherDao()
+                        .delete(w)
+                );
+        System.out.println(cityName + " successfully deleted!");
     }
 
-//    public void updateWeatherForGivenLocation() {
-//        System.out.println("Enter a location: ");
-//        String location = new Scanner(System.in).next();
-//        Weather weatherToUpdate = weatherService.getWeatherDao().findByCity(location);
-//        weatherService.getWeatherDao().update(weatherToUpdate);
-//    }
+    //[3] Update 5-day weather for given city
+    public void updateWeatherForGivenCity() {
+        displayDistinctCityNames();
+        String cityName = null;
+
+        try {
+            cityName = getUserChoice("Enter a location: ", String.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        weatherService.getWeatherDao()
+                .findByCity(cityName)
+                .forEach(w -> weatherService
+                        .getWeatherDao()
+                        .update(w)
+                );
+        System.out.println(cityName + " successfully updated!");
+    }
+
+    //-----Methods available in submenu ([4] Display weather (Submenu))-----
 
     public void listAllWeathers() {
         System.out.println("List of all locations: ");
-        weatherService.getWeatherDao().findAllWeathers().forEach(System.out::println);
+        weatherService.getWeatherDao()
+                .findAllWeathers()
+                .forEach(System.out::println);
     }
 
-    public void listWeatherForGivenLocationId() {
-        System.out.println("Enter a location ID: ");
-        int locationId = new Scanner(System.in).nextInt();
-        System.out.println(weatherService.getWeatherDao().findById(locationId));
+    public void findWeatherForGivenWeatherId() {
+        Integer weatherId = null;
+
+        try {
+            weatherId = getUserChoice("Enter a location: ", Integer.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        System.out.println(weatherService.getWeatherDao()
+                .findById(weatherId)
+        );
     }
 
-    public void listWeatherForGivenLocationCityName() {
-        System.out.println("Enter a location city name: ");
-        String locationCityName = new Scanner(System.in).next();
-        System.out.println(weatherService.getWeatherDao().findByCity(locationCityName));
+    public void findWeatherForGivenCity() {
+        displayDistinctCityNames();
+        String cityName = null;
+
+        try {
+            cityName = getUserChoice("Enter a location: ", String.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        weatherService.getWeatherDao()
+                .findByCity(cityName)
+                .forEach(System.out::println);
     }
 
+    public void findWeatherForGivenCityAndDate() {
+        displayDistinctCityNames();
+        String cityName = null;
+        String date = null;
+
+        try {
+            cityName = getUserChoice("Enter city name: ", String.class);
+            date = getUserChoice("Enter date: ", String.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        weatherService.getWeatherDao()
+                .findByCityAndDate(cityName, date)
+                .forEach(System.out::println);
+    }
+
+    //-----Additional methods-----
+
+    private void displayDistinctCityNames() {
+        System.out.println("Available cities: ");
+        weatherService.getWeatherDao()
+                .findAllWeathers()
+                .stream()
+                .filter(distinctByKey(WeatherEntity::getCityName))
+                .map(WeatherEntity::getCityName)
+                .forEach(System.out::println);
+    }
+
+    private <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+        Map<Object, Boolean> seen = new ConcurrentHashMap<>();
+        return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
+    }
 }
-
