@@ -140,7 +140,7 @@ public class Controller {
     //-----Methods available in submenu ([4] Display weather (Submenu))-----
 
     public void listAllWeathers() {
-        System.out.println("List of all locations: ");
+        System.out.println("List of all weathers: ");
         weatherService.getWeatherDao()
                 .findAllWeathers()
                 .forEach(System.out::println);
@@ -155,6 +155,7 @@ public class Controller {
             e.printStackTrace();
         }
 
+        System.out.printf("Weather for weatherId = %s:%n", weatherId);
         System.out.println(weatherService.getWeatherDao()
                 .findById(weatherId)
         );
@@ -170,6 +171,8 @@ public class Controller {
             e.printStackTrace();
         }
 
+        System.out.printf("Weather for %s:%n", cityName);
+
         weatherService.getWeatherDao()
                 .findByCity(cityName)
                 .forEach(System.out::println);
@@ -178,14 +181,22 @@ public class Controller {
     public void findWeatherForGivenCityAndDate() {
         displayDistinctCityNames();
         String cityName = null;
+        String year;
+        String month;
+        String day;
         String date = null;
 
         try {
             cityName = getUserChoice("Enter city name: ", String.class);
-            date = getUserChoice("Enter date: ", String.class);
+            year = getUserChoice("Enter year: ", String.class);
+            month = getUserChoice("Enter month: ", String.class);
+            day = getUserChoice("Enter day: ", String.class);
+            date = String.format("%s/%s/%s", year, month, day);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        System.out.printf("Weather for %s %s:%n", cityName, date);
 
         weatherService.getWeatherDao()
                 .findByCityAndDate(cityName, date)
