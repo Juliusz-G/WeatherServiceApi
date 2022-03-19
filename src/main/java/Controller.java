@@ -150,7 +150,7 @@ public class Controller {
 
     public void listAllWeathers() {
         System.out.println("List of all weathers: ");
-        weatherService.listAllWeathers();
+        weatherService.listAllWeathers().forEach(System.out::println);
     }
 
     public void findWeatherForGivenWeatherId() {
@@ -163,9 +163,7 @@ public class Controller {
         }
 
         System.out.printf("Weather for weatherId = %s:%n", weatherId);
-        System.out.println(weatherService.getWeatherDao()
-                .findById(weatherId)
-        );
+        System.out.println(weatherService.findWeatherForGivenWeatherId(weatherId));
     }
 
     public void findWeatherForGivenCity() {
@@ -180,9 +178,7 @@ public class Controller {
 
         System.out.printf("Weather for %s:%n", cityName);
 
-        weatherService.getWeatherDao()
-                .findByCity(cityName)
-                .forEach(System.out::println);
+        weatherService.findWeatherForGivenCity(cityName).forEach(System.out::println);
     }
 
     public void findWeatherForGivenCityAndDate() {
@@ -205,25 +201,15 @@ public class Controller {
 
         System.out.printf("Weather for %s %s:%n", cityName, date);
 
-        weatherService.getWeatherDao()
-                .findByCityAndDate(cityName, date)
-                .forEach(System.out::println);
+        weatherService.findWeatherForGivenCityAndDate(cityName, date).forEach(System.out::println);
     }
 
     //-----Additional methods-----
 
     private void displayDistinctCityNames() {
         System.out.println("Available cities: ");
-        weatherService.getWeatherDao()
-                .findAllWeathers()
-                .stream()
-                .filter(distinctByKey(WeatherEntity::getCityName))
-                .map(WeatherEntity::getCityName)
-                .forEach(System.out::println);
+        System.out.println(weatherService.displayDistinctCityNames());
     }
 
-    private <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
-        Map<Object, Boolean> seen = new ConcurrentHashMap<>();
-        return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
-    }
+
 }
