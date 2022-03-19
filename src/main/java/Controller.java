@@ -1,5 +1,4 @@
 import dao.WeatherDao;
-import model.entity.WeatherEntity;
 import model.api.WeatherApi;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,13 +6,10 @@ import lombok.NoArgsConstructor;
 import service.WeatherRepository;
 import service.WeatherService;
 import service.WeatherTransformer;
+import service.WeatherValidator;
 
 import java.util.InputMismatchException;
-import java.util.Map;
 import java.util.Scanner;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,8 +24,10 @@ public class Controller {
     private WeatherService weatherService = new WeatherService(
             new WeatherRepository(),
             new WeatherDao(),
-            new WeatherTransformer()
+            new WeatherTransformer(),
+            new WeatherValidator()
     );
+    private final WeatherValidator weatherValidator = new WeatherValidator();
 
     //-----Menu structure-----
 
@@ -200,7 +198,6 @@ public class Controller {
         }
 
         System.out.printf("Weather for %s %s:%n", cityName, date);
-
         weatherService.findWeatherForGivenCityAndDate(cityName, date).forEach(System.out::println);
     }
 

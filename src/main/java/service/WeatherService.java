@@ -1,13 +1,14 @@
 package service;
 
 import dao.WeatherDao;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import model.api.WeatherApi;
 import model.dto.WeatherDto;
 import model.entity.WeatherEntity;
 
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -15,14 +16,21 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-@AllArgsConstructor
-@NoArgsConstructor
+
 @Data
 public class WeatherService {
 
-    private WeatherRepository weatherRepository;
-    private WeatherDao weatherDao;
-    private WeatherTransformer weatherTransformer;
+    private final WeatherRepository weatherRepository;
+    private final WeatherDao weatherDao;
+    private final WeatherTransformer weatherTransformer;
+    private final WeatherValidator weatherValidator;
+
+    public WeatherService(WeatherRepository weatherRepository, WeatherDao weatherDao, WeatherTransformer weatherTransformer, WeatherValidator weatherValidator) {
+        this.weatherRepository = weatherRepository;
+        this.weatherDao = weatherDao;
+        this.weatherTransformer = weatherTransformer;
+        this.weatherValidator = weatherValidator;
+    }
 
     public WeatherApi addWeatherForCoordinates(String apiUrl, String lon, String lat) {
 
@@ -30,65 +38,71 @@ public class WeatherService {
                 .jsonDeserialization(String
                         .format(apiUrl, lon, lat), WeatherApi.class
                 );
-        weatherApi.getList().stream().map(weather -> weatherTransformer.fromApiToDto(weather))
+        weatherApi.getList().stream().map(weatherTransformer::fromApiToDto)
                 .peek(weatherDto -> {
                     weatherDto.setCityName(weatherApi.getCity().getName());
                     weatherDto.setLon(weatherApi.getCity().getCoord().getLon());
                     weatherDto.setLat(weatherApi.getCity().getCoord().getLat());
-                }).map(weatherDto -> weatherTransformer.fromDtoToEntity(weatherDto))
-                .forEach(weatherEntity -> weatherDao.saveOrUpdate(weatherEntity));
+                })
+                .map(weatherTransformer::fromDtoToEntity)
+                .forEach(weatherDao::saveOrUpdate);
 
         return weatherApi;
     }
 
-    public void addWeatherForGivenCity(String apiUrl, String cityName) {
+    public WeatherApi addWeatherForGivenCity(String apiUrl, String cityName) {
 
         WeatherApi weatherApi = weatherRepository
                 .jsonDeserialization(String
                         .format(apiUrl, cityName), WeatherApi.class
                 );
-        weatherApi.getList().stream().map(weather -> weatherTransformer.fromApiToDto(weather))
+        weatherApi.getList().stream().map(weatherTransformer::fromApiToDto)
                 .peek(weatherDto -> {
                     weatherDto.setCityName(weatherApi.getCity().getName());
                     weatherDto.setLon(weatherApi.getCity().getCoord().getLon());
                     weatherDto.setLat(weatherApi.getCity().getCoord().getLat());
-                }).map(weatherDto -> weatherTransformer.fromDtoToEntity(weatherDto))
-                .forEach(weatherEntity -> weatherDao.saveOrUpdate(weatherEntity));
+                })
+                .map(weatherTransformer::fromDtoToEntity)
+                .forEach(weatherDao::saveOrUpdate);
+        return weatherApi;
     }
 
     public void updateWeatherForGivenCity(String cityName) {
         weatherDao.findByCity(cityName)
-                .forEach(w -> weatherDao.update(w));
-
+                .forEach(weatherDao::update);
     }
 
     public void deleteWeatherForGivenCity(String cityName) {
-        weatherDao
-                .findByCity(cityName)
-                .forEach(w -> weatherDao.delete(w)
+        weatherDao.findByCity(cityName)
+                .forEach(weatherDao::delete
                 );
     }
 
     public List<WeatherDto> listAllWeathers() {
-        return weatherDao.findAllWeathers().stream().map(weatherEntity -> weatherTransformer.fromEntityToDto(weatherEntity)).collect(Collectors.toList());
+        return weatherDao.findAllWeathers().stream()
+                .map(weatherTransformer::fromEntityToDto)
+                .collect(Collectors.toList());
     }
 
     public WeatherDto findWeatherForGivenWeatherId(Integer weatherId) {
         return weatherTransformer.fromEntityToDto(weatherDao.findById(weatherId));
     }
 
-    public List<WeatherDto> findWeatherForGivenCity(String cityname) {
-        return weatherDao.findByCity(cityname).stream().map(weatherEntity -> weatherTransformer.fromEntityToDto(weatherEntity)).collect(Collectors.toList());
+    public List<WeatherDto> findWeatherForGivenCity(String cityName) {
+        return weatherDao.findByCity(cityName).stream()
+                .map(weatherTransformer::fromEntityToDto)
+                .collect(Collectors.toList());
     }
 
     public List<WeatherDto> findWeatherForGivenCityAndDate(String cityName, String date) {
-        return weatherDao.findByCityAndDate(cityName, date)
-                .stream().map(weatherEntity -> weatherTransformer.fromEntityToDto(weatherEntity)).collect(Collectors.toList());
+        String resultDate = weatherValidator.dateValidation(date) ? date : LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+        return weatherDao.findByCityAndDate(cityName, resultDate).stream()
+                .map(weatherTransformer::fromEntityToDto)
+                .collect(Collectors.toList());
     }
 
     public List<String> displayDistinctCityNames() {
-        return weatherDao.findAllWeathers()
-                .stream()
+        return weatherDao.findAllWeathers().stream()
                 .filter(distinctByKey(WeatherEntity::getCityName))
                 .map(WeatherEntity::getCityName)
                 .collect(Collectors.toList());
