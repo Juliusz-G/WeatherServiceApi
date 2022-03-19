@@ -15,6 +15,8 @@ public class WeatherDto {
 
     private int weatherId;
     private String cityName;
+    private double lon;
+    private double lat;
     private Timestamp date;
     private double temp;
     private int humidity;
