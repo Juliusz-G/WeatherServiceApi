@@ -10,27 +10,9 @@ import lombok.NoArgsConstructor;
 @Data
 public class City{
 
-	@SerializedName("country")
-	private String country;
-
 	@SerializedName("coord")
 	private Coord coord;
 
-	@SerializedName("sunrise")
-	private int sunrise;
-
-	@SerializedName("timezone")
-	private int timezone;
-
-	@SerializedName("sunset")
-	private int sunset;
-
 	@SerializedName("name")
 	private String name;
-
-	@SerializedName("id")
-	private int id;
-
-	@SerializedName("population")
-	private int population;
 }

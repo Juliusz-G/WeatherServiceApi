@@ -15,15 +15,6 @@ public class WeatherApi {
 	@SerializedName("city")
 	private City city;
 
-	@SerializedName("cnt")
-	private int cnt;
-
-	@SerializedName("cod")
-	private String cod;
-
-	@SerializedName("message")
-	private int message;
-
 	@SerializedName("list")
 	private List<ListItem> list;
 }

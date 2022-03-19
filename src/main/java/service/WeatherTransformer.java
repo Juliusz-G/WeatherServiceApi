@@ -27,9 +27,9 @@ public class WeatherTransformer {
             weatherDto.setWindSpeed(weatherApi.getList().get(i).getWind().getSpeed());
             weatherDtoList.add(weatherDto);
         }
-
         return weatherDtoList;
     }
+
 
     public List<WeatherEntity> fromDtoToEntity(List<WeatherDto> weatherDtoList) {
         List<WeatherEntity> weatherEntityList = new ArrayList<>();
@@ -47,7 +47,6 @@ public class WeatherTransformer {
             weatherEntity.setWindSpeed(weatherDtoList.get(i).getWindSpeed());
             weatherEntityList.add(weatherEntity);
         }
-
         return weatherEntityList;
     }
 

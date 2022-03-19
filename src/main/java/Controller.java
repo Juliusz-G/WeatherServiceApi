@@ -96,12 +96,7 @@ public class Controller {
             e.printStackTrace();
         }
 
-        weatherService.getWeatherDao()
-                .findByCity(cityName)
-                .forEach(w -> weatherService
-                        .getWeatherDao()
-                        .delete(w)
-                );
+        weatherService.deleteWeatherForGivenCity(cityName);
         System.out.println(cityName + " successfully deleted!");
     }
 
@@ -116,12 +111,7 @@ public class Controller {
             e.printStackTrace();
         }
 
-        weatherService.getWeatherDao()
-                .findByCity(cityName)
-                .forEach(w -> weatherService
-                        .getWeatherDao()
-                        .update(w)
-                );
+        weatherService.updateWeatherForGivenCity(cityName);
         System.out.println(cityName + " successfully updated!");
     }
 
@@ -137,19 +127,7 @@ public class Controller {
             e.printStackTrace();
         }
 
-        WeatherApi weatherApi = weatherService.getWeatherRepository()
-                .jsonDeserialization(String
-                        .format(API_URL_CITY, cityName)
-                );
-
-        weatherService.getWeatherTransformer()
-                .fromDtoToEntity(weatherService.getWeatherTransformer()
-                        .fromApiToDto(weatherApi)
-                )
-                .forEach(w -> weatherService
-                        .getWeatherDao()
-                        .saveOrUpdate(w) //if exists than update
-                );
+        weatherService.addWeatherForGivenCity(API_URL_CITY, cityName);
         System.out.println(cityName + " successfully added!");
     }
 
@@ -164,20 +142,7 @@ public class Controller {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        WeatherApi weatherApi = weatherService.getWeatherRepository()
-                .jsonDeserialization(String
-                        .format(API_URL_COORDINATES, lon, lat)
-                );
-
-        weatherService.getWeatherTransformer()
-                .fromDtoToEntity(weatherService.getWeatherTransformer()
-                        .fromApiToDto(weatherApi)
-                )
-                .forEach(w -> weatherService
-                        .getWeatherDao()
-                        .saveOrUpdate(w) //if exists than update
-                );
+        WeatherApi weatherApi = weatherService.addWeatherForCoordinates(API_URL_COORDINATES, lon, lat);
         System.out.println(weatherApi.getCity().getName() + " successfully added!");
     }
 
@@ -185,9 +150,7 @@ public class Controller {
 
     public void listAllWeathers() {
         System.out.println("List of all weathers: ");
-        weatherService.getWeatherDao()
-                .findAllWeathers()
-                .forEach(System.out::println);
+        weatherService.listAllWeathers();
     }
 
     public void findWeatherForGivenWeatherId() {

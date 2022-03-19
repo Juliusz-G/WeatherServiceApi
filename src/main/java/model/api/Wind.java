@@ -15,7 +15,4 @@ public class Wind{
 
 	@SerializedName("speed")
 	private double speed;
-
-	@SerializedName("gust")
-	private double gust;
 }
