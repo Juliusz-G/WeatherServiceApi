@@ -19,6 +19,12 @@ public class WeatherEntity {
     @Column(name = "weather_id")
     private int weatherId;
 
+    @Column(name = "lon")
+    private double lon;
+
+    @Column(name = "lat")
+    private double lat;
+
     @Column(name = "city_name")
     private String cityName;
 
