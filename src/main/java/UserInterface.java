@@ -40,7 +40,7 @@ public class UserInterface {
         Integer choice = -1;
 
         while (choice != 0) {
-            controllerTwo.printSubmenu();
+            controllerTwo.printDisplayingSubmenu();
             try {
                 choice = controllerTwo.getUserChoice("Enter your choice:", Integer.class);
             } catch (Exception e) {

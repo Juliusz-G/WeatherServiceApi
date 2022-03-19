@@ -37,7 +37,7 @@ public class Controller {
     public void printMainMenu() {
         System.out.println();
         System.out.println("==========================================================");
-        System.out.println("[1] Add 5-day weather for city.");
+        System.out.println("[1] Add 5-day weather.");
         System.out.println("[2] Delete 5-day weather for city.");
         System.out.println("[3] Update 5-day weather for city.");
         System.out.println("[4] Display weather (Submenu).");
@@ -45,14 +45,25 @@ public class Controller {
         System.out.println("==========================================================");
     }
 
-    //Submenu
-    public void printSubmenu() {
+    //Submenu for displaying
+    public void printDisplayingSubmenu() {
         System.out.println();
         System.out.println("==========================================================");
         System.out.println("[1] Display all weathers.");
         System.out.println("[2] Display weather by ID.");
         System.out.println("[3] Display weather by city.");
-        System.out.println("[4] Display weather by city and date.");
+        System.out.println("[4] Display weather by coordinates.");
+        System.out.println("[5] Display weather by city and date.");
+        System.out.println("[0] BACK");
+        System.out.println("==========================================================");
+    }
+
+    //Submenu for adding
+    public void printAddingSubmenu() {
+        System.out.println();
+        System.out.println("==========================================================");
+        System.out.println("[1] Add by city.");
+        System.out.println("[2] Add by coordinates.");
         System.out.println("[0] BACK");
         System.out.println("==========================================================");
     }
@@ -74,12 +85,54 @@ public class Controller {
 
     //-----Methods available in main menu-----
 
-    //[1] Add 5-day weather for given city
+    //[2] Delete 5-day weather for given city
+    public void deleteWeatherForGivenCity() {
+        displayDistinctCityNames();
+        String cityName = null;
+
+        try {
+            cityName = getUserChoice("Enter city name: ", String.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        weatherService.getWeatherDao()
+                .findByCity(cityName)
+                .forEach(w -> weatherService
+                        .getWeatherDao()
+                        .delete(w)
+                );
+        System.out.println(cityName + " successfully deleted!");
+    }
+
+    //[3] Update 5-day weather for given city
+    public void updateWeatherForGivenCity() {
+        displayDistinctCityNames();
+        String cityName = null;
+
+        try {
+            cityName = getUserChoice("Enter city name: ", String.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        weatherService.getWeatherDao()
+                .findByCity(cityName)
+                .forEach(w -> weatherService
+                        .getWeatherDao()
+                        .update(w)
+                );
+        System.out.println(cityName + " successfully updated!");
+    }
+
+    //-----Methods available in submenu ([1] Add 5-day weather)-----
+
+    //[1] Add by city
     public void addWeatherForGivenCity() {
         String cityName = null;
 
         try {
-            cityName = getUserChoice("Enter a location: ", String.class);
+            cityName = getUserChoice("Enter city name: ", String.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -100,47 +153,35 @@ public class Controller {
         System.out.println(cityName + " successfully added!");
     }
 
-    //[2] Delete 5-day weather for given city
-    public void deleteWeatherForGivenCity() {
-        displayDistinctCityNames();
-        String cityName = null;
+    //[2] Add by coordinates
+    public void addWeatherForCoordinates() {
+        String lon = null;
+        String lat = null;
 
         try {
-            cityName = getUserChoice("Enter a location: ", String.class);
+            lon = getUserChoice("Enter lon: ", String.class);
+            lat = getUserChoice("Enter lat: ", String.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        weatherService.getWeatherDao()
-                .findByCity(cityName)
+        WeatherApi weatherApi = weatherService.getWeatherRepository()
+                .jsonDeserialization(String
+                        .format(API_URL_COORDINATES, lon, lat)
+                );
+
+        weatherService.getWeatherTransformer()
+                .fromDtoToEntity(weatherService.getWeatherTransformer()
+                        .fromApiToDto(weatherApi)
+                )
                 .forEach(w -> weatherService
                         .getWeatherDao()
-                        .delete(w)
+                        .saveOrUpdate(w) //if exists than update
                 );
-        System.out.println(cityName + " successfully deleted!");
+        System.out.println(weatherApi.getCity().getName() + " successfully added!");
     }
 
-    //[3] Update 5-day weather for given city
-    public void updateWeatherForGivenCity() {
-        displayDistinctCityNames();
-        String cityName = null;
-
-        try {
-            cityName = getUserChoice("Enter a location: ", String.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        weatherService.getWeatherDao()
-                .findByCity(cityName)
-                .forEach(w -> weatherService
-                        .getWeatherDao()
-                        .update(w)
-                );
-        System.out.println(cityName + " successfully updated!");
-    }
-
-    //-----Methods available in submenu ([4] Display weather (Submenu))-----
+    //-----Methods available in submenu ([4] Display weather)-----
 
     public void listAllWeathers() {
         System.out.println("List of all weathers: ");
@@ -153,7 +194,7 @@ public class Controller {
         Integer weatherId = null;
 
         try {
-            weatherId = getUserChoice("Enter a location: ", Integer.class);
+            weatherId = getUserChoice("Enter weather ID: ", Integer.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -169,7 +210,7 @@ public class Controller {
         String cityName = null;
 
         try {
-            cityName = getUserChoice("Enter a location: ", String.class);
+            cityName = getUserChoice("Enter city name: ", String.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
