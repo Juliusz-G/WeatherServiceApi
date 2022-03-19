@@ -18,7 +18,7 @@ public class UserInterface {
                 case 0:
                     break;
                 case 1:
-                    controllerTwo.addWeatherForGivenCity();
+                    addingSubmenu();
                     break;
                 case 2:
                     controllerTwo.deleteWeatherForGivenCity();
