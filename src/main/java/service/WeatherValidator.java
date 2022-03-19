@@ -4,8 +4,12 @@ import java.time.LocalDate;
 
 public class WeatherValidator {
 
+    public boolean cityNameValidation(String cityName) {
+        return !cityName.isEmpty();
+    }
+
     public boolean dateFormatValidation(String date) {
-        if (date.matches("\\d{4}-\\d{2}-\\d{2}")) {
+        if (date.matches("\\d{4}/\\d{2}/\\d{2}")) {
             return true;
         }
         System.out.println("INCORRECT DATE FORMAT! DISPLAYING WEATHER FOR TOMORROW");
