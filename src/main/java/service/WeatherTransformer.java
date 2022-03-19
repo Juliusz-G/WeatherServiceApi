@@ -17,6 +17,8 @@ public class WeatherTransformer {
         for (int i = 0; i < weatherApi.getList().size() - 1; i++) {
             WeatherDto weatherDto = new WeatherDto();
             weatherDto.setCityName(weatherApi.getCity().getName());
+            weatherDto.setLon(weatherApi.getCity().getCoord().getLon());
+            weatherDto.setLat(weatherApi.getCity().getCoord().getLat());
             weatherDto.setDate(parseUnixTimestampToSqlTimestamp(weatherApi.getList().get(i).getDt()));
             weatherDto.setTemp(weatherApi.getList().get(i).getMain().getTemp());
             weatherDto.setHumidity(weatherApi.getList().get(i).getMain().getHumidity());
@@ -35,6 +37,8 @@ public class WeatherTransformer {
         for (int i = 0; i < weatherDtoList.size() - 1; i++) {
             WeatherEntity weatherEntity = new WeatherEntity();
             weatherEntity.setCityName(weatherDtoList.get(i).getCityName());
+            weatherEntity.setLon(weatherDtoList.get(i).getLon());
+            weatherEntity.setLat(weatherDtoList.get(i).getLat());
             weatherEntity.setDate(weatherDtoList.get(i).getDate());
             weatherEntity.setTemp(weatherDtoList.get(i).getTemp());
             weatherEntity.setHumidity(weatherDtoList.get(i).getHumidity());
