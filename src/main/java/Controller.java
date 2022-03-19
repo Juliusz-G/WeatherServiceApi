@@ -21,7 +21,10 @@ import java.util.function.Predicate;
 public class Controller {
 
     private final String API_KEY = "baa6ece140be0985d8bf8766fa381d1d";
-    private final String API_URL = "https://api.openweathermap.org/data/2.5/forecast?q=%s&units=metric&appid=" + API_KEY;
+    private final String API_URL_CITY =
+            "https://api.openweathermap.org/data/2.5/forecast?q=%s&units=metric&appid=" + API_KEY;
+    private final String API_URL_COORDINATES =
+            "https://api.openweathermap.org/data/2.5/forecast?lat=%s&lon=%s&units=metric&appid=" + API_KEY;
     private WeatherService weatherService = new WeatherService(
             new WeatherRepository(),
             new WeatherDao(),
@@ -83,7 +86,7 @@ public class Controller {
 
         WeatherApi weatherApi = weatherService.getWeatherRepository()
                 .jsonDeserialization(String
-                        .format(API_URL, cityName)
+                        .format(API_URL_CITY, cityName)
                 );
 
         weatherService.getWeatherTransformer()
