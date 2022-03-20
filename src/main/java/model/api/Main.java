@@ -8,14 +8,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class Main{
+public class Main {
 
-	@SerializedName("temp")
-	private double temp;
+    @SerializedName("temp")
+    private double temp;
 
-	@SerializedName("humidity")
-	private int humidity;
+    @SerializedName("humidity")
+    private int humidity;
 
-	@SerializedName("pressure")
-	private int pressure;
+    @SerializedName("pressure")
+    private int pressure;
 }

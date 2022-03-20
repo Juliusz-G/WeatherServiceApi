@@ -85,6 +85,9 @@ public class UserInterface {
                     controllerTwo.findWeatherForGivenCity();
                     break;
                 case 4:
+
+                    break;
+                case 5:
                     controllerTwo.findWeatherForGivenCityAndDate();
                     break;
                 default:

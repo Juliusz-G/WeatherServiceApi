@@ -12,9 +12,9 @@ import java.util.List;
 @Data
 public class WeatherApi {
 
-	@SerializedName("city")
-	private City city;
+    @SerializedName("city")
+    private City city;
 
-	@SerializedName("list")
-	private List<ListItem> list;
+    @SerializedName("list")
+    private List<ListItem> list;
 }

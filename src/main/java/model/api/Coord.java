@@ -8,11 +8,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class Coord{
+public class Coord {
 
-	@SerializedName("lon")
-	private double lon;
+    @SerializedName("lon")
+    private double lon;
 
-	@SerializedName("lat")
-	private double lat;
+    @SerializedName("lat")
+    private double lat;
 }

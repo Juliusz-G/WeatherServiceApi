@@ -43,7 +43,7 @@ public class WeatherTransformer {
         weatherDto.setCityName(weatherEntity.getCityName());
         weatherDto.setLon(weatherEntity.getLon());
         weatherDto.setLat(weatherEntity.getLat());
-        weatherDto.setDate(parseUnixTimestampToSqlTimestamp(weatherEntity.getDate().getTime()));
+        weatherDto.setDate(weatherEntity.getDate());
         weatherDto.setTemp(weatherEntity.getTemp());
         weatherDto.setHumidity(weatherEntity.getHumidity());
         weatherDto.setPressure(weatherEntity.getPressure());
@@ -57,4 +57,5 @@ public class WeatherTransformer {
     private Timestamp parseUnixTimestampToSqlTimestamp(long unixTimestamp) {
         return Timestamp.from(Instant.ofEpochSecond(unixTimestamp));
     }
+
 }

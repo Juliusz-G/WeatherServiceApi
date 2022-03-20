@@ -18,13 +18,13 @@ public class WeatherRepository {
         gson = new GsonBuilder().setPrettyPrinting().create();
     }
 
-    public <T> T jsonDeserialization(String url,Class<T>tClass) {
+    public <T> T jsonDeserialization(String url, Class<T> tClass) {
         T weatherApi = null;
         try {
             URL urlAddress = new URL(url);
             HttpURLConnection httpURLConnection = (HttpURLConnection) urlAddress.openConnection();
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader((InputStream) httpURLConnection.getContent()));
-            weatherApi = gson.fromJson(bufferedReader,tClass);
+            weatherApi = gson.fromJson(bufferedReader, tClass);
             httpURLConnection.disconnect();
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
