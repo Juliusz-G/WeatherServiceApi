@@ -115,7 +115,7 @@ public class WeatherService {
 
     }
 
-    public List<WeatherDto> findByCoordinatesAndDate(String lon, String lat, String date) {
+    public List<WeatherDto> findWeatherForGivenCoordinatesAndDate(String lon, String lat, String date) {
         String resultDate = weatherValidator.displayWeatherDateValidation(date) ? date : LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
         return weatherDao.findByCoordinatesAndDate(lon, lat, resultDate).stream()
                 .map(weatherTransformer::fromEntityToDto)
