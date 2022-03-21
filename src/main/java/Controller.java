@@ -1,5 +1,4 @@
 import dao.WeatherDao;
-import model.entity.WeatherEntity;
 import model.api.WeatherApi;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,13 +6,10 @@ import lombok.NoArgsConstructor;
 import service.WeatherRepository;
 import service.WeatherService;
 import service.WeatherTransformer;
+import service.WeatherValidator;
 
 import java.util.InputMismatchException;
-import java.util.Map;
 import java.util.Scanner;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,8 +24,10 @@ public class Controller {
     private WeatherService weatherService = new WeatherService(
             new WeatherRepository(),
             new WeatherDao(),
-            new WeatherTransformer()
+            new WeatherTransformer(),
+            new WeatherValidator()
     );
+    private final WeatherValidator weatherValidator = new WeatherValidator();
 
     //-----Menu structure-----
 
@@ -96,12 +94,7 @@ public class Controller {
             e.printStackTrace();
         }
 
-        weatherService.getWeatherDao()
-                .findByCity(cityName)
-                .forEach(w -> weatherService
-                        .getWeatherDao()
-                        .delete(w)
-                );
+        weatherService.deleteWeatherForGivenCity(cityName);
         System.out.println(cityName + " successfully deleted!");
     }
 
@@ -116,12 +109,7 @@ public class Controller {
             e.printStackTrace();
         }
 
-        weatherService.getWeatherDao()
-                .findByCity(cityName)
-                .forEach(w -> weatherService
-                        .getWeatherDao()
-                        .update(w)
-                );
+        weatherService.updateWeatherForGivenCity(cityName);
         System.out.println(cityName + " successfully updated!");
     }
 
@@ -137,19 +125,7 @@ public class Controller {
             e.printStackTrace();
         }
 
-        WeatherApi weatherApi = weatherService.getWeatherRepository()
-                .jsonDeserialization(String
-                        .format(API_URL_CITY, cityName)
-                );
-
-        weatherService.getWeatherTransformer()
-                .fromDtoToEntity(weatherService.getWeatherTransformer()
-                        .fromApiToDto(weatherApi)
-                )
-                .forEach(w -> weatherService
-                        .getWeatherDao()
-                        .saveOrUpdate(w) //if exists than update
-                );
+        weatherService.addWeatherForGivenCity(API_URL_CITY, cityName);
         System.out.println(cityName + " successfully added!");
     }
 
@@ -164,20 +140,7 @@ public class Controller {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        WeatherApi weatherApi = weatherService.getWeatherRepository()
-                .jsonDeserialization(String
-                        .format(API_URL_COORDINATES, lon, lat)
-                );
-
-        weatherService.getWeatherTransformer()
-                .fromDtoToEntity(weatherService.getWeatherTransformer()
-                        .fromApiToDto(weatherApi)
-                )
-                .forEach(w -> weatherService
-                        .getWeatherDao()
-                        .saveOrUpdate(w) //if exists than update
-                );
+        WeatherApi weatherApi = weatherService.addWeatherForCoordinates(API_URL_COORDINATES, lon, lat);
         System.out.println(weatherApi.getCity().getName() + " successfully added!");
     }
 
@@ -185,9 +148,7 @@ public class Controller {
 
     public void listAllWeathers() {
         System.out.println("List of all weathers: ");
-        weatherService.getWeatherDao()
-                .findAllWeathers()
-                .forEach(System.out::println);
+        weatherService.listAllWeathers().forEach(System.out::println);
     }
 
     public void findWeatherForGivenWeatherId() {
@@ -200,9 +161,7 @@ public class Controller {
         }
 
         System.out.printf("Weather for weatherId = %s:%n", weatherId);
-        System.out.println(weatherService.getWeatherDao()
-                .findById(weatherId)
-        );
+        System.out.println(weatherService.findWeatherForGivenWeatherId(weatherId));
     }
 
     public void findWeatherForGivenCity() {
@@ -217,9 +176,7 @@ public class Controller {
 
         System.out.printf("Weather for %s:%n", cityName);
 
-        weatherService.getWeatherDao()
-                .findByCity(cityName)
-                .forEach(System.out::println);
+        weatherService.findWeatherForGivenCity(cityName).forEach(System.out::println);
     }
 
     public void findWeatherForGivenCityAndDate() {
@@ -241,26 +198,15 @@ public class Controller {
         }
 
         System.out.printf("Weather for %s %s:%n", cityName, date);
-
-        weatherService.getWeatherDao()
-                .findByCityAndDate(cityName, date)
-                .forEach(System.out::println);
+        weatherService.findWeatherForGivenCityAndDate(cityName, date).forEach(System.out::println);
     }
 
     //-----Additional methods-----
 
     private void displayDistinctCityNames() {
         System.out.println("Available cities: ");
-        weatherService.getWeatherDao()
-                .findAllWeathers()
-                .stream()
-                .filter(distinctByKey(WeatherEntity::getCityName))
-                .map(WeatherEntity::getCityName)
-                .forEach(System.out::println);
+        System.out.println(weatherService.displayDistinctCityNames());
     }
 
-    private <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
-        Map<Object, Boolean> seen = new ConcurrentHashMap<>();
-        return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
-    }
+
 }

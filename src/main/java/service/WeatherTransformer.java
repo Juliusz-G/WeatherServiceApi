@@ -1,57 +1,61 @@
 package service;
 
+import model.api.ListItem;
 import model.dto.WeatherDto;
 import model.entity.WeatherEntity;
-import model.api.WeatherApi;
 
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
 
 public class WeatherTransformer {
 
-    public List<WeatherDto> fromApiToDto(WeatherApi weatherApi) {
-        List<WeatherDto> weatherDtoList = new ArrayList<>();
+    public WeatherDto fromApiToDto(ListItem listItem) {
+        WeatherDto weatherDto = new WeatherDto();
+        weatherDto.setDate(parseUnixTimestampToSqlTimestamp(listItem.getDt()));
+        weatherDto.setTemp(listItem.getMain().getTemp());
+        weatherDto.setHumidity(listItem.getMain().getHumidity());
+        weatherDto.setPressure(listItem.getMain().getPressure());
+        weatherDto.setWindDeg(listItem.getWind().getDeg());
+        weatherDto.setWindSpeed(listItem.getWind().getSpeed());
 
-        for (int i = 0; i < weatherApi.getList().size() - 1; i++) {
-            WeatherDto weatherDto = new WeatherDto();
-            weatherDto.setCityName(weatherApi.getCity().getName());
-            weatherDto.setLon(weatherApi.getCity().getCoord().getLon());
-            weatherDto.setLat(weatherApi.getCity().getCoord().getLat());
-            weatherDto.setDate(parseUnixTimestampToSqlTimestamp(weatherApi.getList().get(i).getDt()));
-            weatherDto.setTemp(weatherApi.getList().get(i).getMain().getTemp());
-            weatherDto.setHumidity(weatherApi.getList().get(i).getMain().getHumidity());
-            weatherDto.setPressure(weatherApi.getList().get(i).getMain().getPressure());
-            weatherDto.setWindDeg(weatherApi.getList().get(i).getWind().getDeg());
-            weatherDto.setWindSpeed(weatherApi.getList().get(i).getWind().getSpeed());
-            weatherDtoList.add(weatherDto);
-        }
-
-        return weatherDtoList;
+        return weatherDto;
     }
 
-    public List<WeatherEntity> fromDtoToEntity(List<WeatherDto> weatherDtoList) {
-        List<WeatherEntity> weatherEntityList = new ArrayList<>();
+    public WeatherEntity fromDtoToEntity(WeatherDto weatherDto) {
 
-        for (int i = 0; i < weatherDtoList.size() - 1; i++) {
-            WeatherEntity weatherEntity = new WeatherEntity();
-            weatherEntity.setCityName(weatherDtoList.get(i).getCityName());
-            weatherEntity.setLon(weatherDtoList.get(i).getLon());
-            weatherEntity.setLat(weatherDtoList.get(i).getLat());
-            weatherEntity.setDate(weatherDtoList.get(i).getDate());
-            weatherEntity.setTemp(weatherDtoList.get(i).getTemp());
-            weatherEntity.setHumidity(weatherDtoList.get(i).getHumidity());
-            weatherEntity.setPressure(weatherDtoList.get(i).getPressure());
-            weatherEntity.setWindDeg(weatherDtoList.get(i).getWindDeg());
-            weatherEntity.setWindSpeed(weatherDtoList.get(i).getWindSpeed());
-            weatherEntityList.add(weatherEntity);
-        }
+        WeatherEntity weatherEntity = new WeatherEntity();
+        weatherEntity.setCityName(weatherDto.getCityName());
+        weatherEntity.setLon(weatherDto.getLon());
+        weatherEntity.setLat(weatherDto.getLat());
+        weatherEntity.setDate(weatherDto.getDate());
+        weatherEntity.setTemp(weatherDto.getTemp());
+        weatherEntity.setHumidity(weatherDto.getHumidity());
+        weatherEntity.setPressure(weatherDto.getPressure());
+        weatherEntity.setWindDeg(weatherDto.getWindDeg());
+        weatherEntity.setWindSpeed(weatherDto.getWindSpeed());
 
-        return weatherEntityList;
+        return weatherEntity;
+    }
+
+    public WeatherDto fromEntityToDto(WeatherEntity weatherEntity) {
+
+        WeatherDto weatherDto = new WeatherDto();
+        weatherDto.setCityName(weatherEntity.getCityName());
+        weatherDto.setLon(weatherEntity.getLon());
+        weatherDto.setLat(weatherEntity.getLat());
+        weatherDto.setDate(weatherEntity.getDate());
+        weatherDto.setTemp(weatherEntity.getTemp());
+        weatherDto.setHumidity(weatherEntity.getHumidity());
+        weatherDto.setPressure(weatherEntity.getPressure());
+        weatherDto.setWindDeg(weatherEntity.getWindDeg());
+        weatherDto.setWindSpeed(weatherEntity.getWindSpeed());
+
+        return weatherDto;
+
     }
 
     private Timestamp parseUnixTimestampToSqlTimestamp(long unixTimestamp) {
         return Timestamp.from(Instant.ofEpochSecond(unixTimestamp));
     }
+
 }

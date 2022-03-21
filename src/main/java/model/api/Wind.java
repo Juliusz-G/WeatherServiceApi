@@ -8,14 +8,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class Wind{
+public class Wind {
 
-	@SerializedName("deg")
-	private int deg;
+    @SerializedName("deg")
+    private int deg;
 
-	@SerializedName("speed")
-	private double speed;
-
-	@SerializedName("gust")
-	private double gust;
+    @SerializedName("speed")
+    private double speed;
 }

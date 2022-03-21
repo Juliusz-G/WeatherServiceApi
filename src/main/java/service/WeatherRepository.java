@@ -1,6 +1,5 @@
 package service;
 
-import model.api.WeatherApi;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.logging.log4j.LogManager;
@@ -19,13 +18,13 @@ public class WeatherRepository {
         gson = new GsonBuilder().setPrettyPrinting().create();
     }
 
-    public WeatherApi jsonDeserialization(String url) {
-        WeatherApi weatherApi = null;
+    public <T> T jsonDeserialization(String url, Class<T> tClass) {
+        T weatherApi = null;
         try {
             URL urlAddress = new URL(url);
             HttpURLConnection httpURLConnection = (HttpURLConnection) urlAddress.openConnection();
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader((InputStream) httpURLConnection.getContent()));
-            weatherApi = gson.fromJson(bufferedReader, WeatherApi.class);
+            weatherApi = gson.fromJson(bufferedReader, tClass);
             httpURLConnection.disconnect();
         } catch (IOException e) {
             logger.error(e.getMessage(), e);

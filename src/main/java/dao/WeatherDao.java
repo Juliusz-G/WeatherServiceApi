@@ -66,7 +66,7 @@ public class WeatherDao {
             transaction = session.beginTransaction();
 
             List<WeatherEntity> weatherEntityList = session.createQuery("SELECT w FROM WeatherEntity AS w WHERE " +
-                            "w.cityName = :city_name", WeatherEntity.class)
+                    "w.cityName = :city_name", WeatherEntity.class)
                     .setParameter("city_name", cityName)
                     .getResultList();
 
@@ -112,8 +112,31 @@ public class WeatherDao {
             transaction = session.beginTransaction();
 
             List<WeatherEntity> weatherEntityList = session.createQuery("SELECT w FROM WeatherEntity AS w WHERE " +
-                            "w.cityName = :city_name AND to_char(w.date, 'YYYY/MM/DD') = :date", WeatherEntity.class)
+                    "w.cityName = :city_name AND to_char(w.date, 'YYYY/MM/DD') = :date", WeatherEntity.class)
                     .setParameter("city_name", cityName)
+                    .setParameter("date", date)
+                    .getResultList();
+
+            transaction.commit();
+
+            return weatherEntityList;
+        } catch (HibernateException e) {
+            if (transaction != null)
+                transaction.rollback();
+
+            logger.error(e.getMessage(), e);
+        }
+        return null;
+    }
+
+    public List<WeatherEntity> findByDate(String date) {
+        Transaction transaction = null;
+
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+
+            List<WeatherEntity> weatherEntityList = session.createQuery("SELECT w FROM WeatherEntity AS w WHERE " +
+                    "to_char(w.date, 'YYYY/MM/DD') = :date", WeatherEntity.class)
                     .setParameter("date", date)
                     .getResultList();
 
