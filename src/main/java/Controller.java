@@ -36,9 +36,9 @@ public class Controller {
     public void printMainMenu() {
         System.out.println();
         System.out.println("==========================================================");
-        System.out.println("[1] Add 5-day weather.");
-        System.out.println("[2] Delete 5-day weather for city.");
-        System.out.println("[3] Update 5-day weather for city.");
+        System.out.println("[1] Add weather.");
+        System.out.println("[2] Delete weather for city.");
+        System.out.println("[3] Update weather for city.");
         System.out.println("[4] Display weather (Submenu).");
         System.out.println("[0] EXIT");
         System.out.println("==========================================================");
@@ -142,14 +142,21 @@ public class Controller {
     public void addWeatherForCoordinates() {
         String lon = null;
         String lat = null;
-
+        String year;
+        String month;
+        String day;
+        String date = null;
         try {
             lon = getUserChoice("Enter lon: ", String.class);
             lat = getUserChoice("Enter lat: ", String.class);
+            year = getUserChoice("Enter year: ", String.class);
+            month = getUserChoice("Enter month: ", String.class);
+            day = getUserChoice("Enter day: ", String.class);
+            date = String.format("%s/%s/%s", year, month, day);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        WeatherApi weatherApi = weatherService.addWeatherForCoordinates(API_URL_COORDINATES, lon, lat);
+        WeatherApi weatherApi = weatherService.addWeatherForCoordinates(API_URL_COORDINATES, lon, lat,date);
         System.out.println(weatherApi.getCity().getName() + " successfully added!");
     }
 
