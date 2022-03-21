@@ -156,7 +156,7 @@ public class Controller {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        WeatherApi weatherApi = weatherService.addWeatherForCoordinates(API_URL_COORDINATES, lon, lat,date);
+        WeatherApi weatherApi = weatherService.addWeatherForCoordinates(API_URL_COORDINATES, lon, lat, date);
         System.out.println(weatherApi.getCity().getName() + " successfully added!");
     }
 
@@ -215,6 +215,30 @@ public class Controller {
 
         System.out.printf("Weather for %s %s:%n", cityName, date);
         weatherService.findWeatherForGivenCityAndDate(cityName, date).forEach(System.out::println);
+    }
+
+    public void findWeatherForGivenCoordinatesAndDate() {
+        displayDistinctCityNames();
+        String lon = null;
+        String lat = null;
+        String year;
+        String month;
+        String day;
+        String date = null;
+
+        try {
+            lon = getUserChoice("Enter lon: ", String.class);
+            lat = getUserChoice("Enter lat: ", String.class);
+            year = getUserChoice("Enter year: ", String.class);
+            month = getUserChoice("Enter month: ", String.class);
+            day = getUserChoice("Enter day: ", String.class);
+            date = String.format("%s/%s/%s", year, month, day);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        System.out.printf("Weather for %s %s %s:%n", lon, lat, date);
+        weatherService.findByCoordinatesAndDate(lon, lat, date).forEach(System.out::println);
     }
 
     //-----Additional methods-----

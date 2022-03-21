@@ -85,6 +85,7 @@ public class UserInterface {
                     controllerTwo.findWeatherForGivenCity();
                     return;
                 case 4:
+                    controllerTwo.findWeatherForGivenCoordinatesAndDate();
                     return;
                 case 5:
                     controllerTwo.findWeatherForGivenCityAndDate();
