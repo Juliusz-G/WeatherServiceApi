@@ -22,10 +22,10 @@ public class UserInterface {
                     break;
                 case 2:
                     controllerTwo.deleteWeatherForGivenCity();
-                    break;
+                    return;
                 case 3:
                     controllerTwo.updateWeatherForGivenCity();
-                    break;
+                    return;
                 case 4:
                     displayingSubmenu();
                     break;
@@ -51,10 +51,10 @@ public class UserInterface {
                     break;
                 case 1:
                     controllerTwo.addWeatherForGivenCity();
-                    break;
+                    return;
                 case 2:
                     controllerTwo.addWeatherForCoordinates();
-                    break;
+                    return;
                 default:
                     System.out.println("*** Enter a number between 0 and 5 ***");
             }
@@ -77,19 +77,19 @@ public class UserInterface {
                     break;
                 case 1:
                     controllerTwo.listAllWeathers();
-                    break;
+                    return;
                 case 2:
                     controllerTwo.findWeatherForGivenWeatherId();
-                    break;
+                    return;
                 case 3:
                     controllerTwo.findWeatherForGivenCity();
-                    break;
+                    return;
                 case 4:
 
-                    break;
+                    return;
                 case 5:
                     controllerTwo.findWeatherForGivenCityAndDate();
-                    break;
+                    return;
                 default:
                     System.out.println("*** Enter a number between 0 and 5 ***");
             }

@@ -8,6 +8,7 @@ import service.WeatherService;
 import service.WeatherTransformer;
 import service.WeatherValidator;
 
+import java.time.LocalDate;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -118,14 +119,22 @@ public class Controller {
     //[1] Add by city
     public void addWeatherForGivenCity() {
         String cityName = null;
-
+        String year;
+        String month;
+        String day;
+        String date = null;
         try {
             cityName = getUserChoice("Enter city name: ", String.class);
+            System.out.printf("SELECT DATE BETWEEN %s AND %s", LocalDate.now(),LocalDate.now().plusDays(5)).println();
+            year = getUserChoice("Enter year: ", String.class);
+            month = getUserChoice("Enter month: ", String.class);
+            day = getUserChoice("Enter day: ", String.class);
+            date = String.format("%s/%s/%s", year, month, day);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        weatherService.addWeatherForGivenCity(API_URL_CITY, cityName);
+        weatherService.addWeatherForGivenCity(API_URL_CITY, cityName,date);
         System.out.println(cityName + " successfully added!");
     }
 

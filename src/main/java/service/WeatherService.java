@@ -6,8 +6,10 @@ import model.api.WeatherApi;
 import model.dto.WeatherDto;
 import model.entity.WeatherEntity;
 
-
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +40,7 @@ public class WeatherService {
                 .jsonDeserialization(String
                         .format(apiUrl, lon, lat), WeatherApi.class
                 );
+
         weatherApi.getList().stream().map(weatherTransformer::fromApiToDto)
                 .peek(weatherDto -> {
                     weatherDto.setCityName(weatherApi.getCity().getName());
@@ -50,13 +53,15 @@ public class WeatherService {
         return weatherApi;
     }
 
-    public WeatherApi addWeatherForGivenCity(String apiUrl, String cityName) {
-
+    public WeatherApi addWeatherForGivenCity(String apiUrl, String cityName, String date) {
+        LocalDate localDate = stringToLocalDate(date);
         WeatherApi weatherApi = weatherRepository
                 .jsonDeserialization(String
                         .format(apiUrl, cityName), WeatherApi.class
                 );
-        weatherApi.getList().stream().map(weatherTransformer::fromApiToDto)
+        weatherApi.getList().stream()
+                .filter(weather -> epochToLocalDate(weather.getDt()).equals(localDate))
+                .map(weatherTransformer::fromApiToDto)
                 .peek(weatherDto -> {
                     weatherDto.setCityName(weatherApi.getCity().getName());
                     weatherDto.setLon(weatherApi.getCity().getCoord().getLon());
@@ -98,7 +103,7 @@ public class WeatherService {
     }
 
     public List<WeatherDto> findWeatherForGivenCityAndDate(String cityName, String date) {
-        String resultDate = weatherValidator.dateValidation(date) ? date : LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+        String resultDate = weatherValidator.displayWeatherDateValidation(date) ? date : LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
         if (weatherValidator.cityNameValidation(cityName)) {
             return weatherDao.findByCityAndDate(cityName, resultDate).stream()
                     .map(weatherTransformer::fromEntityToDto)
@@ -110,6 +115,16 @@ public class WeatherService {
 
     public List<WeatherDto> findAllByDate(String date) {
         return weatherDao.findByDate(date).stream().map(weatherTransformer::fromEntityToDto).collect(Collectors.toList());
+    }
+
+    public LocalDate epochToLocalDate(Long epochDate) {
+        return Instant.ofEpochSecond(epochDate).atZone(ZoneId.systemDefault()).toLocalDate();
+    }
+
+
+    public LocalDate stringToLocalDate(String date) {
+        String resultDate = weatherValidator.addWeatherDateValidation(date) ? date : LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+        return LocalDate.parse(resultDate, DateTimeFormatter.ofPattern("yyyy/MM/dd"));
     }
 
     public List<String> displayDistinctCityNames() {
