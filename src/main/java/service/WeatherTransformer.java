@@ -40,6 +40,7 @@ public class WeatherTransformer {
     public WeatherDto fromEntityToDto(WeatherEntity weatherEntity) {
 
         WeatherDto weatherDto = new WeatherDto();
+        weatherDto.setWeatherId(weatherEntity.getWeatherId());
         weatherDto.setCityName(weatherEntity.getCityName());
         weatherDto.setLon(weatherEntity.getLon());
         weatherDto.setLat(weatherEntity.getLat());

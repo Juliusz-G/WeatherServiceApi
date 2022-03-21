@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
-import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,7 +27,7 @@ public class WeatherDto {
     @Override
     public String toString() {
         return
-                "CITY NAME: " + cityName + ", " + " TEMPERATURE: " + temp + "°C," +
+                "ID: " + weatherId + ", " + "CITY NAME: " + cityName + ", " + "COORDINATES: " + "(" + "LON: " + lon + ", " + "LAT: " + lat + ")" + ", " + " TEMPERATURE: " + temp + "°C," +
                         " PRESSURE: " + pressure + "hPa," +
                         " HUMIDITY: " + humidity + "%" + ", " + " WIND SPEED: " + windSpeed + "m/s, " +
                         " WIND DEGREE: " + windDeg + "°" + ", " + "DATE: " + date;

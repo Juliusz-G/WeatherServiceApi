@@ -125,7 +125,7 @@ public class Controller {
         String date = null;
         try {
             cityName = getUserChoice("Enter city name: ", String.class);
-            System.out.printf("SELECT DATE BETWEEN %s AND %s", LocalDate.now(),LocalDate.now().plusDays(5)).println();
+            System.out.printf("SELECT DATE BETWEEN %s AND %s", LocalDate.now(), LocalDate.now().plusDays(5)).println();
             year = getUserChoice("Enter year: ", String.class);
             month = getUserChoice("Enter month: ", String.class);
             day = getUserChoice("Enter day: ", String.class);
@@ -134,7 +134,7 @@ public class Controller {
             e.printStackTrace();
         }
 
-        weatherService.addWeatherForGivenCity(API_URL_CITY, cityName,date);
+        weatherService.addWeatherForGivenCity(API_URL_CITY, cityName, date);
         System.out.println(cityName + " successfully added!");
     }
 

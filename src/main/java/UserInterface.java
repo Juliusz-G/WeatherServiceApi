@@ -22,10 +22,10 @@ public class UserInterface {
                     break;
                 case 2:
                     controllerTwo.deleteWeatherForGivenCity();
-                    return;
+                    break;
                 case 3:
                     controllerTwo.updateWeatherForGivenCity();
-                    return;
+                    break;
                 case 4:
                     displayingSubmenu();
                     break;
@@ -85,7 +85,6 @@ public class UserInterface {
                     controllerTwo.findWeatherForGivenCity();
                     return;
                 case 4:
-
                     return;
                 case 5:
                     controllerTwo.findWeatherForGivenCityAndDate();
