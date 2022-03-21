@@ -135,7 +135,8 @@ public class Controller {
         }
 
         weatherService.addWeatherForGivenCity(API_URL_CITY, cityName, date);
-        System.out.println(cityName + " successfully added!");
+        System.out.println(weatherService.displayDistinctCityNames()
+                .get(weatherService.displayDistinctCityNames().size()-1) + " successfully added!");
     }
 
     //[2] Add by coordinates
@@ -157,7 +158,8 @@ public class Controller {
             e.printStackTrace();
         }
         WeatherApi weatherApi = weatherService.addWeatherForCoordinates(API_URL_COORDINATES, lon, lat,date);
-        System.out.println(weatherApi.getCity().getName() + " successfully added!");
+        System.out.println(weatherService.displayDistinctCityNames()
+                .get(weatherService.displayDistinctCityNames().size()-1) + " successfully added!");
     }
 
     //-----Methods available in submenu ([4] Display weather)-----
