@@ -34,14 +34,16 @@ public class WeatherService {
         this.weatherValidator = weatherValidator;
     }
 
-    public WeatherApi addWeatherForCoordinates(String apiUrl, String lon, String lat) {
-
+    public WeatherApi addWeatherForCoordinates(String apiUrl, String lon, String lat, String date) {
+        LocalDate localDate = stringToLocalDate(date);
         WeatherApi weatherApi = weatherRepository
                 .jsonDeserialization(String
                         .format(apiUrl, lon, lat), WeatherApi.class
                 );
 
-        weatherApi.getList().stream().map(weatherTransformer::fromApiToDto)
+        weatherApi.getList().stream()
+                .filter(weather -> epochToLocalDate(weather.getDt()).equals(localDate))
+                .map(weatherTransformer::fromApiToDto)
                 .peek(weatherDto -> {
                     weatherDto.setCityName(weatherApi.getCity().getName());
                     weatherDto.setLon(weatherApi.getCity().getCoord().getLon());
