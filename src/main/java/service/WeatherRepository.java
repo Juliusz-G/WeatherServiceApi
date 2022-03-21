@@ -27,7 +27,7 @@ public class WeatherRepository {
             weatherApi = gson.fromJson(bufferedReader, tClass);
             httpURLConnection.disconnect();
         } catch (IOException e) {
-            logger.error(e.getMessage(), e);
+            logger.info("INCORRECT URL!");
         }
         return weatherApi;
     }

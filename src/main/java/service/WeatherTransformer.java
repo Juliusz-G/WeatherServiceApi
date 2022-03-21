@@ -1,5 +1,6 @@
 package service;
 
+import model.api.City;
 import model.api.ListItem;
 import model.dto.WeatherDto;
 import model.entity.WeatherEntity;
@@ -9,8 +10,11 @@ import java.time.Instant;
 
 public class WeatherTransformer {
 
-    public WeatherDto fromApiToDto(ListItem listItem) {
+    public WeatherDto fromApiToDto(ListItem listItem, City city) {
         WeatherDto weatherDto = new WeatherDto();
+        weatherDto.setCityName(city.getName());
+        weatherDto.setLon(city.getCoord().getLon());
+        weatherDto.setLat(city.getCoord().getLat());
         weatherDto.setDate(parseUnixTimestampToSqlTimestamp(listItem.getDt()));
         weatherDto.setTemp(listItem.getMain().getTemp());
         weatherDto.setHumidity(listItem.getMain().getHumidity());
@@ -52,7 +56,22 @@ public class WeatherTransformer {
         weatherDto.setWindSpeed(weatherEntity.getWindSpeed());
 
         return weatherDto;
+    }
 
+    public WeatherEntity fromApiToEntity(ListItem listItem, City city) {
+
+        WeatherEntity weatherEntity = new WeatherEntity();
+        weatherEntity.setCityName(city.getName());
+        weatherEntity.setLon(city.getCoord().getLon());
+        weatherEntity.setLat(city.getCoord().getLat());
+        weatherEntity.setDate(parseUnixTimestampToSqlTimestamp(listItem.getDt()));
+        weatherEntity.setTemp(listItem.getMain().getTemp());
+        weatherEntity.setHumidity(listItem.getMain().getHumidity());
+        weatherEntity.setPressure(listItem.getMain().getPressure());
+        weatherEntity.setWindDeg(listItem.getWind().getDeg());
+        weatherEntity.setWindSpeed(listItem.getWind().getSpeed());
+
+        return weatherEntity;
     }
 
     private Timestamp parseUnixTimestampToSqlTimestamp(long unixTimestamp) {

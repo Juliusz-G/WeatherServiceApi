@@ -3,12 +3,15 @@ import model.api.WeatherApi;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import service.WeatherRepository;
 import service.WeatherService;
 import service.WeatherTransformer;
 import service.WeatherValidator;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -29,7 +32,7 @@ public class Controller {
             new WeatherValidator()
     );
     private final WeatherValidator weatherValidator = new WeatherValidator();
-
+    private final Logger logger = LogManager.getLogger(Controller.class);
     //-----Menu structure-----
 
     //Main menu
@@ -133,10 +136,8 @@ public class Controller {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        weatherService.addWeatherForGivenCity(API_URL_CITY, cityName, date);
-        System.out.println(weatherService.displayDistinctCityNames()
-                .get(weatherService.displayDistinctCityNames().size() - 1) + " successfully added!");
+        WeatherApi weatherApi = weatherService.addWeatherForGivenCity(API_URL_CITY, cityName, date);
+        System.out.println(weatherApi != null ? weatherApi.getCity().getName() + " successfully added!" : " cannot find city!");
     }
 
     //[2] Add by coordinates
@@ -157,9 +158,8 @@ public class Controller {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        weatherService.addWeatherForCoordinates(API_URL_COORDINATES, lon, lat, date);
-        System.out.println(weatherService.displayDistinctCityNames()
-                .get(weatherService.displayDistinctCityNames().size() - 1) + " successfully added!");
+        WeatherApi weatherApi = weatherService.addWeatherForCoordinates(API_URL_COORDINATES, lon, lat, date);
+        System.out.println(weatherApi != null ? weatherApi.getCity().getName() + " successfully added!" : " cannot find city");
     }
 
     //-----Methods available in submenu ([4] Display weather)-----
@@ -200,9 +200,9 @@ public class Controller {
     public void findWeatherForGivenCityAndDate() {
         displayDistinctCityNames();
         String cityName = null;
-        String year;
-        String month;
-        String day;
+        String year = null;
+        String month = null;
+        String day = null;
         String date = null;
 
         try {
@@ -215,8 +215,12 @@ public class Controller {
             e.printStackTrace();
         }
 
-        System.out.printf("Weather for %s %s:%n", cityName, date);
-        weatherService.findWeatherForGivenCityAndDate(cityName, date).forEach(System.out::println);
+//        System.out.printf("Weather for %s %s:%n", cityName, date);
+//        System.out.printf("Weather for %s %s %s %s:%n", cityName, year, month, day);
+//        System.out.println(weatherValidator.displayWeatherDateValidation(date)? date : "");
+        String resultDate = weatherValidator.displayWeatherDateValidation(date) ? date : LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+        String resultCityName = weatherValidator.cityNameValidation(cityName) ? cityName : "";
+        weatherService.findWeatherForGivenCityAndDate(resultCityName, resultDate).forEach(System.out::println);
     }
 
     public void findWeatherForGivenCoordinatesAndDate() {
