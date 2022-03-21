@@ -1,12 +1,12 @@
 package service;
 
+
 import dao.WeatherDao;
 import lombok.Data;
 import model.api.WeatherApi;
 import model.dto.WeatherDto;
 import model.entity.WeatherEntity;
 
-import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -35,43 +35,40 @@ public class WeatherService {
     }
 
     public WeatherApi addWeatherForCoordinates(String apiUrl, String lon, String lat, String date) {
-        LocalDate localDate = stringToLocalDate(date);
-        WeatherApi weatherApi = weatherRepository
-                .jsonDeserialization(String
-                        .format(apiUrl, lon, lat), WeatherApi.class
-                );
+        if (weatherDao.findByCoordinatesAndDate(lon, lat, date).isEmpty()) {
+            WeatherApi resultFromWeatherApi = weatherRepository
+                    .jsonDeserialization(String
+                            .format(apiUrl, lon, lat), WeatherApi.class
+                    );
+            if (resultFromWeatherApi != null) {
+                addToDatabase(resultFromWeatherApi, date);
+            }
 
-        weatherApi.getList().stream()
-                .filter(weather -> epochToLocalDate(weather.getDt()).equals(localDate))
-                .map(weatherTransformer::fromApiToDto)
-                .peek(weatherDto -> {
-                    weatherDto.setCityName(weatherApi.getCity().getName());
-                    weatherDto.setLon(weatherApi.getCity().getCoord().getLon());
-                    weatherDto.setLat(weatherApi.getCity().getCoord().getLat());
-                })
-                .map(weatherTransformer::fromDtoToEntity)
-                .forEach(weatherDao::saveOrUpdate);
-
-        return weatherApi;
+            return resultFromWeatherApi;
+        }
+        return null;
     }
 
     public WeatherApi addWeatherForGivenCity(String apiUrl, String cityName, String date) {
+        if (weatherDao.findByCityAndDate(cityName, date).isEmpty()) {
+            WeatherApi resultFromWeatherApi = weatherRepository
+                    .jsonDeserialization(String
+                            .format(apiUrl, cityName), WeatherApi.class
+                    );
+            if (resultFromWeatherApi != null) {
+                addToDatabase(resultFromWeatherApi, date);
+            }
+            return resultFromWeatherApi;
+        }
+        return null;
+    }
+
+    public void addToDatabase(WeatherApi weatherApi, String date) {
         LocalDate localDate = stringToLocalDate(date);
-        WeatherApi weatherApi = weatherRepository
-                .jsonDeserialization(String
-                        .format(apiUrl, cityName), WeatherApi.class
-                );
         weatherApi.getList().stream()
                 .filter(weather -> epochToLocalDate(weather.getDt()).equals(localDate))
-                .map(weatherTransformer::fromApiToDto)
-                .peek(weatherDto -> {
-                    weatherDto.setCityName(weatherApi.getCity().getName());
-                    weatherDto.setLon(weatherApi.getCity().getCoord().getLon());
-                    weatherDto.setLat(weatherApi.getCity().getCoord().getLat());
-                })
-                .map(weatherTransformer::fromDtoToEntity)
+                .map(weather -> weatherTransformer.fromApiToEntity(weather, weatherApi.getCity()))
                 .forEach(weatherDao::saveOrUpdate);
-        return weatherApi;
     }
 
     public void updateWeatherForGivenCity(String cityName) {
@@ -104,14 +101,13 @@ public class WeatherService {
         return listAllWeathers();
     }
 
-    public List<WeatherDto> findWeatherForGivenCityAndDate(String cityName, String date) {
-        String resultDate = weatherValidator.displayWeatherDateValidation(date) ? date : LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-        if (weatherValidator.cityNameValidation(cityName)) {
+    public List<WeatherDto> findWeatherForGivenCityAndDate(String cityName, String resultDate) {
+        if (!cityName.isBlank()) {
             return weatherDao.findByCityAndDate(cityName, resultDate).stream()
                     .map(weatherTransformer::fromEntityToDto)
                     .collect(Collectors.toList());
         }
-        return findAllByDate(date);
+        return findAllByDate(resultDate);
 
     }
 
