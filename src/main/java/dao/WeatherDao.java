@@ -152,6 +152,31 @@ public class WeatherDao {
         return null;
     }
 
+    public List<WeatherEntity> findByCoordinatesAndDate(String longitude, String latitude, String date) {
+        Transaction transaction = null;
+
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+
+            List<WeatherEntity> weatherEntityList = session.createQuery("SELECT w FROM WeatherEntity AS w WHERE " +
+                    "to_char(w.lon) = :lon AND to_char(w.lat) = :lat AND to_char(w.date, 'YYYY/MM/DD') = :date", WeatherEntity.class)
+                    .setParameter("lon", longitude)
+                    .setParameter("lat", latitude)
+                    .setParameter("date", date)
+                    .getResultList();
+
+            transaction.commit();
+
+            return weatherEntityList;
+        } catch (HibernateException e) {
+            if (transaction != null)
+                transaction.rollback();
+
+            logger.error(e.getMessage(), e);
+        }
+        return null;
+    }
+
     //-----Update-----
 
     public void update(WeatherEntity weatherEntity) {

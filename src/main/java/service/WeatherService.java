@@ -115,6 +115,13 @@ public class WeatherService {
 
     }
 
+    public List<WeatherDto> findByCoordinatesAndDate(String lon, String lat, String date) {
+        String resultDate = weatherValidator.displayWeatherDateValidation(date) ? date : LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+        return weatherDao.findByCoordinatesAndDate(lon, lat, resultDate).stream()
+                .map(weatherTransformer::fromEntityToDto)
+                .collect(Collectors.toList());
+    }
+
     public List<WeatherDto> findAllByDate(String date) {
         return weatherDao.findByDate(date).stream().map(weatherTransformer::fromEntityToDto).collect(Collectors.toList());
     }
