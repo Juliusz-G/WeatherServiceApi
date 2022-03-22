@@ -68,7 +68,7 @@ public class WeatherService {
         weatherApi.getList().stream()
                 .filter(weather -> epochToLocalDate(weather.getDt()).equals(localDate))
                 .map(weather -> weatherTransformer.fromApiToEntity(weather, weatherApi.getCity()))
-                .forEach(weatherDao::saveOrUpdate);
+                .forEach(weatherDao::save);
     }
 
     public void updateWeatherForGivenCity(String cityName) {
