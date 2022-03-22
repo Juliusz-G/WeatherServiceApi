@@ -164,7 +164,7 @@ public class Controller {
         String longitude = weatherValidator.longitudeValidation(lon) ? lon : "";
         String latitude = weatherValidator.latitudeValidation(lat) ? lat : "";
         WeatherApi weatherApi = weatherService.addWeatherForCoordinates(API_URL_COORDINATES, longitude, latitude, resultDate);
-        System.out.println(weatherApi != null ? weatherApi.getCity().getName() + " successfully added!" : " cannot find city");
+        System.out.println(weatherApi != null ? weatherApi.getCity().getName() + " successfully added!" : " cannot find city!");
     }
 
     //-----Methods available in submenu ([4] Display weather)-----
