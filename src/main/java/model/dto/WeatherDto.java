@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 @Data
 public class WeatherDto {
 
-    //Data transfer Object - DTO,
+    //Data transfer Object - DTO
 
     private int weatherId;
     private String cityName;
@@ -26,10 +26,14 @@ public class WeatherDto {
 
     @Override
     public String toString() {
-        return
-                "ID: " + weatherId + ", " + "CITY NAME: " + cityName + ", " + "COORDINATES: " + "(" + "LON: " + lon + ", " + "LAT: " + lat + ")" + ", " + " TEMPERATURE: " + temp + "°C," +
-                        " PRESSURE: " + pressure + "hPa," +
-                        " HUMIDITY: " + humidity + "%" + ", " + " WIND SPEED: " + windSpeed + "m/s, " +
-                        " WIND DEGREE: " + windDeg + "°" + ", " + "DATE: " + date;
+        return "ID: " + weatherId + ", " +
+                "CITY NAME: " + cityName + ", " +
+                "COORDINATES: " + "(" + "LON: " + lon + ", LAT: " + lat + "), " +
+                "TEMPERATURE: " + temp + "°C, " +
+                "PRESSURE: " + pressure + "hPa, " +
+                "HUMIDITY: " + humidity + "%, " +
+                "WIND SPEED: " + windSpeed + "m/s, " +
+                "WIND DEGREE: " + windDeg + "°, " +
+                "DATE: " + date;
     }
 }
