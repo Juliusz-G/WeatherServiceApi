@@ -73,7 +73,8 @@ public class WeatherService {
 
     public void updateWeatherForGivenCity(String cityName) {
         weatherDao.findByCity(cityName)
-                .forEach(weatherDao::update);
+                .forEach(weatherDao::update
+                );
     }
 
     public void deleteWeatherForGivenCity(String cityName) {
@@ -102,7 +103,7 @@ public class WeatherService {
     }
 
     public List<WeatherDto> findWeatherForGivenCityAndDate(String cityName, String resultDate) {
-        if (!cityName.isBlank()) {
+        if (weatherValidator.cityNameValidation(cityName)) {
             return weatherDao.findByCityAndDate(cityName, resultDate).stream()
                     .map(weatherTransformer::fromEntityToDto)
                     .collect(Collectors.toList());
