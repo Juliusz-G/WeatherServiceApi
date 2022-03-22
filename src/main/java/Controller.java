@@ -136,7 +136,9 @@ public class Controller {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        WeatherApi weatherApi = weatherService.addWeatherForGivenCity(API_URL_CITY, cityName, date);
+        String resultDate = weatherValidator.addWeatherDateValidation(date) ? date : LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+        String resultCityName = weatherValidator.cityNameValidation(cityName) ? cityName : "";
+        WeatherApi weatherApi = weatherService.addWeatherForGivenCity(API_URL_CITY, resultCityName, resultDate);
         System.out.println(weatherApi != null ? weatherApi.getCity().getName() + " successfully added!" : " cannot find city!");
     }
 
@@ -158,7 +160,10 @@ public class Controller {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        WeatherApi weatherApi = weatherService.addWeatherForCoordinates(API_URL_COORDINATES, lon, lat, date);
+        String resultDate = weatherValidator.addWeatherDateValidation(date) ? date : LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+        String longitude = weatherValidator.longitudeValidation(lon) ? lon : "";
+        String latitude = weatherValidator.latitudeValidation(lat) ? lat : "";
+        WeatherApi weatherApi = weatherService.addWeatherForCoordinates(API_URL_COORDINATES, longitude, latitude, resultDate);
         System.out.println(weatherApi != null ? weatherApi.getCity().getName() + " successfully added!" : " cannot find city");
     }
 
@@ -193,16 +198,16 @@ public class Controller {
         }
 
         System.out.printf("Weather for %s:%n", cityName);
-
-        weatherService.findWeatherForGivenCity(cityName).forEach(System.out::println);
+        String resultCityName = weatherValidator.cityNameValidation(cityName) ? cityName : "";
+        weatherService.findWeatherForGivenCity(resultCityName).forEach(System.out::println);
     }
 
     public void findWeatherForGivenCityAndDate() {
         displayDistinctCityNames();
         String cityName = null;
-        String year = null;
-        String month = null;
-        String day = null;
+        String year;
+        String month;
+        String day;
         String date = null;
 
         try {
@@ -214,10 +219,6 @@ public class Controller {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-//        System.out.printf("Weather for %s %s:%n", cityName, date);
-//        System.out.printf("Weather for %s %s %s %s:%n", cityName, year, month, day);
-//        System.out.println(weatherValidator.displayWeatherDateValidation(date)? date : "");
         String resultDate = weatherValidator.displayWeatherDateValidation(date) ? date : LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
         String resultCityName = weatherValidator.cityNameValidation(cityName) ? cityName : "";
         weatherService.findWeatherForGivenCityAndDate(resultCityName, resultDate).forEach(System.out::println);
@@ -242,9 +243,11 @@ public class Controller {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        String resultDate = weatherValidator.displayWeatherDateValidation(date) ? date : LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+        String longitude = weatherValidator.longitudeValidation(lon) ? lon : "";
+        String latitude = weatherValidator.latitudeValidation(lon) ? lon : "";
         System.out.printf("Weather for %s %s %s:%n", lon, lat, date);
-        weatherService.findWeatherForGivenCoordinatesAndDate(lon, lat, date).forEach(System.out::println);
+        weatherService.findWeatherForGivenCoordinatesAndDate(longitude, latitude, resultDate).forEach(System.out::println);
     }
 
 
