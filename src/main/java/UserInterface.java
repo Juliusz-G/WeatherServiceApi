@@ -30,13 +30,14 @@ public class UserInterface {
                     displayingSubmenu();
                     break;
                 default:
-                    System.out.println("*** Enter a number between 0 and 7 ***");
+                    System.out.println("*** Enter a number between 0 and 4 ***");
             }
         }
     }
 
     public void addingSubmenu() {
 
+        System.out.println("--ADD WEATHER SUBMENU--");
         Integer choice = -1;
 
         while (choice != 0) {
@@ -56,13 +57,14 @@ public class UserInterface {
                     controllerTwo.addWeatherForCoordinates();
                     return;
                 default:
-                    System.out.println("*** Enter a number between 0 and 5 ***");
+                    System.out.println("*** Enter a number between 0 and 2 ***");
             }
         }
     }
 
     public void displayingSubmenu() {
 
+        System.out.println("--DISPLAY WEATHER SUBMENU--");
         Integer choice = -1;
 
         while (choice != 0) {
