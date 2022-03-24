@@ -108,6 +108,4 @@ public class WeatherValidator {
         System.out.println("NO DATE ENTERED, IF AVAILABLE-DISPLAYING WEATHER FOR TOMORROW");
         return false;
     }
-
-
 }
