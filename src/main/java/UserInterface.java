@@ -27,7 +27,8 @@ public class UserInterface {
                     addingSubmenu();
                     break;
                 case 2:
-                    controllerTwo.deleteWeatherForGivenCity();
+                    System.out.println("\033[1;34m" + "TO DELETING SUBMENU -->" + "\033[0m");
+                    deletingSubmenu();
                     break;
                 case 3:
                     controllerTwo.updateWeatherForGivenCity();
@@ -63,6 +64,34 @@ public class UserInterface {
                     return;
                 case 2:
                     controllerTwo.addWeatherForCoordinates();
+                    return;
+                default:
+                    System.out.println("*** Enter a number between 0 and 2 ***");
+            }
+        }
+    }
+
+    public void deletingSubmenu() {
+
+        System.out.println("\033[1;34m" + "-------------------DELETE WEATHER SUBMENU-----------------" + "\033[0m");
+        Integer choice = -1;
+
+        while (choice != 0) {
+            controllerTwo.printDeletingSubmenu();
+            try {
+                choice = controllerTwo.getUserChoice("Enter your choice:", Integer.class);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            switch (choice) {
+                case 0:
+                    System.out.println("\033[1;34m" + "TO MAIN MENU -->" + "\033[0m");
+                    break;
+                case 1:
+                    controllerTwo.deleteWeatherForGivenCity();
+                    return;
+                case 2:
+                    controllerTwo.deleteWeatherForId();
                     return;
                 default:
                     System.out.println("*** Enter a number between 0 and 2 ***");

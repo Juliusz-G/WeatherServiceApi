@@ -40,7 +40,7 @@ public class Controller {
         System.out.println();
         System.out.println("==========================================================");
         System.out.println("[1] Add weather (Submenu).");
-        System.out.println("[2] Delete weather for city.");
+        System.out.println("[2] Delete weather (Submenu).");
         System.out.println("[3] Update weather for city.");
         System.out.println("[4] Display weather (Submenu).");
         System.out.println("[0] EXIT");
@@ -66,6 +66,16 @@ public class Controller {
         System.out.println("==========================================================");
         System.out.println("[1] Add by city.");
         System.out.println("[2] Add by coordinates.");
+        System.out.println("[0] BACK");
+        System.out.println("==========================================================");
+    }
+
+    //Submenu for deleting
+    public void printDeletingSubmenu() {
+        System.out.println();
+        System.out.println("==========================================================");
+        System.out.println("[1] Delete by city.");
+        System.out.println("[2] Delete by ID.");
         System.out.println("[0] BACK");
         System.out.println("==========================================================");
     }
@@ -100,6 +110,19 @@ public class Controller {
 
         weatherService.deleteWeatherForGivenCity(cityName);
         System.out.println(cityName + " successfully deleted!");
+    }
+
+    public void deleteWeatherForId() {
+        Integer weatherId = null;
+
+        try {
+            weatherId = getUserChoice("Enter weather ID: ", Integer.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        weatherService.deleteWeatherForGivenId(weatherId);
+        System.out.println(weatherId + " successfully deleted!");
     }
 
     //[3] Update 5-day weather for given city
