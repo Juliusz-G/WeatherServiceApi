@@ -43,7 +43,7 @@ public class WeatherTransformer {
         return weatherEntity;
     }
 
-    private Timestamp parseUnixTimestampToSqlTimestamp(long unixTimestamp) {
+    public Timestamp parseUnixTimestampToSqlTimestamp(long unixTimestamp) {
         return Timestamp.from(Instant.ofEpochSecond(unixTimestamp));
     }
 

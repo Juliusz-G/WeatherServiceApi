@@ -218,8 +218,9 @@ class WeatherValidatorTest {
     @Test
     void when_addWeatherDateValidation_is_valid_then_true_should_be_returned(){
         //given
+        String date=LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
         //when
-        boolean isValid=validation.addWeatherDateValidation("2022/03/22");
+        boolean isValid=validation.addWeatherDateValidation(date);
         //then
         assertThat(isValid).isTrue();
     }

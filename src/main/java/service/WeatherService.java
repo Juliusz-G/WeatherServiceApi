@@ -114,7 +114,6 @@ public class WeatherService {
                     .collect(Collectors.toList());
         }
         return findAllByDate(resultDate);
-
     }
 
     public List<WeatherDto> findWeatherForGivenCoordinatesAndDate(String lon, String lat, String date) {
