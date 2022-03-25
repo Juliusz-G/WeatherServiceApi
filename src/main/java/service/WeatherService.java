@@ -81,6 +81,10 @@ public class WeatherService {
                 .forEach(weatherDao::delete);
     }
 
+    public void deleteWeatherForGivenId(Integer id) {
+        weatherDao.delete(weatherDao.findById(id));
+    }
+
     public List<WeatherDto> listAllWeathers() {
         return weatherDao.findAllWeathers()
                 .stream()
