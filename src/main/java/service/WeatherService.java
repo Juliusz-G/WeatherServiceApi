@@ -151,6 +151,14 @@ public class WeatherService {
                 .collect(Collectors.toList());
     }
 
+    public List<String> displayDistinctCoordinates() {
+        return weatherDao.findAllWeathers()
+                .stream()
+                .filter(distinctByKey(WeatherEntity::getCityName))
+                .map(weatherEntity -> "Lon: " + weatherEntity.getLon() + " Lat: " + weatherEntity.getLat())
+                .collect(Collectors.toList());
+    }
+
     private <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
         Map<Object, Boolean> seen = new ConcurrentHashMap<>();
         return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
