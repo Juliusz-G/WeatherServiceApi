@@ -4,10 +4,14 @@ public class UserInterface {
 
     public void mainMenu() {
 
-        System.out.println("--WEATHER SERVICE--");
+        System.out.println("""
+                \033[4;34m
+                --------------WELCOME TO WEATHER SERVICE APP--------------
+                \033[0m""");
         Integer choice = -1;
 
         while (choice != 0) {
+            System.out.println("\033[1;34m" + "------------------------MAIN MENU-------------------------" + "\033[0m");
             controllerTwo.printMainMenu();
             try {
                 choice = controllerTwo.getUserChoice("Enter your choice:", Integer.class);
@@ -16,8 +20,10 @@ public class UserInterface {
             }
             switch (choice) {
                 case 0:
+                    System.out.println("\033[1;34m" + "CLOSING... THANK YOU!" + "\033[0m");
                     break;
                 case 1:
+                    System.out.println("\033[1;34m" + "TO ADDING SUBMENU -->" + "\033[0m");
                     addingSubmenu();
                     break;
                 case 2:
@@ -27,6 +33,7 @@ public class UserInterface {
                     controllerTwo.updateWeatherForGivenCity();
                     break;
                 case 4:
+                    System.out.println("\033[1;34m" + "TO DISPLAYING SUBMENU -->" + "\033[0m");
                     displayingSubmenu();
                     break;
                 default:
@@ -37,7 +44,7 @@ public class UserInterface {
 
     public void addingSubmenu() {
 
-        System.out.println("--ADD WEATHER SUBMENU--");
+        System.out.println("\033[1;34m" + "--------------------ADD WEATHER SUBMENU-------------------" + "\033[0m");
         Integer choice = -1;
 
         while (choice != 0) {
@@ -49,6 +56,7 @@ public class UserInterface {
             }
             switch (choice) {
                 case 0:
+                    System.out.println("\033[1;34m" + "TO MAIN MENU -->" + "\033[0m");
                     break;
                 case 1:
                     controllerTwo.addWeatherForGivenCity();
@@ -64,7 +72,7 @@ public class UserInterface {
 
     public void displayingSubmenu() {
 
-        System.out.println("--DISPLAY WEATHER SUBMENU--");
+        System.out.println("\033[1;34m" + "-----------------DISPLAY WEATHER SUBMENU------------------" + "\033[0m");
         Integer choice = -1;
 
         while (choice != 0) {
@@ -76,6 +84,7 @@ public class UserInterface {
             }
             switch (choice) {
                 case 0:
+                    System.out.println("\033[1;34m" + "TO MAIN MENU -->" + "\033[0m");
                     break;
                 case 1:
                     controllerTwo.listAllWeathers();
