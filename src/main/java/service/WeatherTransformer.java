@@ -10,37 +10,6 @@ import java.time.Instant;
 
 public class WeatherTransformer {
 
-    public WeatherDto fromApiToDto(ListItem listItem, City city) {
-        WeatherDto weatherDto = new WeatherDto();
-        weatherDto.setCityName(city.getName());
-        weatherDto.setLon(city.getCoord().getLon());
-        weatherDto.setLat(city.getCoord().getLat());
-        weatherDto.setDate(parseUnixTimestampToSqlTimestamp(listItem.getDt()));
-        weatherDto.setTemp(listItem.getMain().getTemp());
-        weatherDto.setHumidity(listItem.getMain().getHumidity());
-        weatherDto.setPressure(listItem.getMain().getPressure());
-        weatherDto.setWindDeg(listItem.getWind().getDeg());
-        weatherDto.setWindSpeed(listItem.getWind().getSpeed());
-
-        return weatherDto;
-    }
-
-    public WeatherEntity fromDtoToEntity(WeatherDto weatherDto) {
-
-        WeatherEntity weatherEntity = new WeatherEntity();
-        weatherEntity.setCityName(weatherDto.getCityName());
-        weatherEntity.setLon(weatherDto.getLon());
-        weatherEntity.setLat(weatherDto.getLat());
-        weatherEntity.setDate(weatherDto.getDate());
-        weatherEntity.setTemp(weatherDto.getTemp());
-        weatherEntity.setHumidity(weatherDto.getHumidity());
-        weatherEntity.setPressure(weatherDto.getPressure());
-        weatherEntity.setWindDeg(weatherDto.getWindDeg());
-        weatherEntity.setWindSpeed(weatherDto.getWindSpeed());
-
-        return weatherEntity;
-    }
-
     public WeatherDto fromEntityToDto(WeatherEntity weatherEntity) {
 
         WeatherDto weatherDto = new WeatherDto();
