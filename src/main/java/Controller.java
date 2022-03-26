@@ -1,10 +1,9 @@
 import dao.WeatherDao;
+import lombok.extern.log4j.Log4j2;
 import model.api.WeatherApi;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import service.WeatherRepository;
 import service.WeatherService;
 import service.WeatherTransformer;
@@ -18,6 +17,7 @@ import java.util.Scanner;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Log4j2
 public class Controller {
 
     private final String API_KEY = "baa6ece140be0985d8bf8766fa381d1d";
@@ -32,7 +32,7 @@ public class Controller {
             new WeatherValidator()
     );
     private final WeatherValidator weatherValidator = new WeatherValidator();
-    private final Logger logger = LogManager.getLogger(Controller.class);
+
     //-----Menu structure-----
 
     //Main menu
@@ -81,7 +81,7 @@ public class Controller {
     }
 
     //Gets user input (Any type)
-    public <T> T getUserChoice(String message, Class<T> c) throws Exception {
+    public <T> T getUserChoice(String message, Class<T> c) {
         System.out.println(message);
         Scanner scanner = new Scanner(System.in);
         try {
@@ -90,7 +90,7 @@ public class Controller {
             if (c == String.class)
                 return c.cast(scanner.nextLine());
         } catch (InputMismatchException e) {
-            throw new Exception(e);
+            log.error(e.getMessage(), e);
         }
         return null;
     }
@@ -118,7 +118,7 @@ public class Controller {
         try {
             weatherId = getUserChoice("Enter weather ID: ", Integer.class);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
 
         weatherService.deleteWeatherForGivenId(weatherId);
@@ -133,7 +133,7 @@ public class Controller {
         try {
             cityName = getUserChoice("Enter city name: ", String.class);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
 
         weatherService.updateWeatherForGivenCity(cityName);
@@ -157,7 +157,7 @@ public class Controller {
             day = getUserChoice("Enter day: ", String.class);
             date = String.format("%s/%s/%s", year, month, day);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         String resultDate = weatherValidator.addWeatherDateValidation(date) ? date :
                 LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
@@ -183,7 +183,7 @@ public class Controller {
             day = getUserChoice("Enter day: ", String.class);
             date = String.format("%s/%s/%s", year, month, day);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         String resultDate = weatherValidator.addWeatherDateValidation(date) ? date :
                 LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
@@ -207,7 +207,7 @@ public class Controller {
         try {
             weatherId = getUserChoice("Enter weather ID: ", Integer.class);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
 
         System.out.printf("Weather for weatherId = %s:%n", weatherId);
@@ -221,7 +221,7 @@ public class Controller {
         try {
             cityName = getUserChoice("Enter city name: ", String.class);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
 
         System.out.printf("Weather for %s:%n", cityName);
@@ -244,7 +244,7 @@ public class Controller {
             day = getUserChoice("Enter day: ", String.class);
             date = String.format("%s/%s/%s", year, month, day);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         String resultDate = weatherValidator.displayWeatherDateValidation(date) ? date :
                 LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
@@ -269,7 +269,7 @@ public class Controller {
             day = getUserChoice("Enter day: ", String.class);
             date = String.format("%s/%s/%s", year, month, day);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         String resultDate = weatherValidator.displayWeatherDateValidation(date) ? date :
                 LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
