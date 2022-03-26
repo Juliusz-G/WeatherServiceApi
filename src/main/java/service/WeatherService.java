@@ -117,13 +117,13 @@ public class WeatherService {
     }
 
     public List<WeatherDto> findWeatherForGivenCoordinatesAndDate(String lon, String lat, String date) {
-        String resultDate = weatherValidator.displayWeatherDateValidation(date) ? date : LocalDate.now()
-                .plusDays(1)
-                .format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-        return weatherDao.findByCoordinatesAndDate(lon, lat, resultDate)
-                .stream()
-                .map(weatherTransformer::fromEntityToDto)
-                .collect(Collectors.toList());
+        if (weatherValidator.longitudeValidation(lon) && weatherValidator.latitudeValidation(lat)) {
+            return weatherDao.findByCoordinatesAndDate(lon, lat, date)
+                    .stream()
+                    .map(weatherTransformer::fromEntityToDto)
+                    .collect(Collectors.toList());
+        }
+        return findAllByDate(date);
     }
 
     public List<WeatherDto> findAllByDate(String date) {
