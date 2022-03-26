@@ -203,18 +203,13 @@ public class WeatherDao {
 
     public void delete(WeatherEntity weatherEntity) {
         Transaction transaction = null;
-
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
-
             session.delete(weatherEntity);
-
             transaction.commit();
-
         } catch (HibernateException e) {
             if (transaction != null)
                 transaction.rollback();
-
             logger.error(e.getMessage(), e);
         }
     }

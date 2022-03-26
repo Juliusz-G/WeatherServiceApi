@@ -1,6 +1,5 @@
 import org.junit.jupiter.api.Test;
 import service.WeatherValidator;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
