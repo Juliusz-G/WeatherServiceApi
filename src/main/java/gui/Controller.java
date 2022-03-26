@@ -1,3 +1,5 @@
+package gui;
+
 import dao.WeatherDao;
 import lombok.extern.log4j.Log4j2;
 import model.api.WeatherApi;
@@ -7,7 +9,7 @@ import lombok.NoArgsConstructor;
 import service.WeatherRepository;
 import service.WeatherService;
 import service.WeatherTransformer;
-import service.WeatherValidator;
+import validation.WeatherValidator;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -35,7 +37,7 @@ public class Controller {
 
     //-----Menu structure-----
 
-    //Main menu
+    //gui.Main menu
     public void printMainMenu() {
         System.out.println();
         System.out.println("==========================================================");

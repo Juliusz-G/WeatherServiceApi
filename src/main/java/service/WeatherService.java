@@ -5,6 +5,7 @@ import lombok.Data;
 import model.api.WeatherApi;
 import model.dto.WeatherDto;
 import model.entity.WeatherEntity;
+import validation.WeatherValidator;
 
 import java.time.Instant;
 import java.time.LocalDate;
