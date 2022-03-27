@@ -1,6 +1,8 @@
+package gui;
+
 public class UserInterface {
 
-    private final Controller controllerTwo = new Controller();
+    private final Controller controller = new Controller();
 
     public void mainMenu() {
 
@@ -11,34 +13,34 @@ public class UserInterface {
         Integer choice = -1;
 
         while (choice != 0) {
-            System.out.println("\033[1;34m" + "------------------------MAIN MENU-------------------------" + "\033[0m");
-            controllerTwo.printMainMenu();
+            System.out.println("\033[1;34m------------------------MAIN MENU-------------------------\033[0m");
+            controller.printMainMenu();
             try {
-                choice = controllerTwo.getUserChoice("Enter your choice:", Integer.class);
+                choice = controller.getUserChoice("ENTER YOUR CHOICE:", Integer.class);
             } catch (Exception e) {
                 e.printStackTrace();
             }
             switch (choice) {
                 case 0:
-                    System.out.println("\033[1;34m" + "CLOSING... THANK YOU!" + "\033[0m");
+                    System.out.println("\033[1;34mCLOSING... THANK YOU!\033[0m");
                     break;
                 case 1:
-                    System.out.println("\033[1;34m" + "TO ADDING SUBMENU -->" + "\033[0m");
+                    System.out.println("\033[1;34mTO ADDING SUBMENU -->\033[0m");
                     addingSubmenu();
                     break;
                 case 2:
-                    System.out.println("\033[1;34m" + "TO DELETING SUBMENU -->" + "\033[0m");
+                    System.out.println("\033[1;34mTO DELETING SUBMENU -->\033[0m");
                     deletingSubmenu();
                     break;
                 case 3:
-                    controllerTwo.updateWeatherForGivenCity();
+                    controller.updateWeatherForGivenCity();
                     break;
                 case 4:
-                    System.out.println("\033[1;34m" + "TO DISPLAYING SUBMENU -->" + "\033[0m");
+                    System.out.println("\033[1;34mTO DISPLAYING SUBMENU -->\033[0m");
                     displayingSubmenu();
                     break;
                 default:
-                    System.out.println("*** Enter a number between 0 and 4 ***");
+                    System.out.println("\033[1;34m*** ENTER A NUMBER BETWEEN 0 AND 4 ***\033[0m");
             }
         }
     }
@@ -49,24 +51,24 @@ public class UserInterface {
         Integer choice = -1;
 
         while (choice != 0) {
-            controllerTwo.printAddingSubmenu();
+            controller.printAddingSubmenu();
             try {
-                choice = controllerTwo.getUserChoice("Enter your choice:", Integer.class);
+                choice = controller.getUserChoice("ENTER YOUR CHOICE:", Integer.class);
             } catch (Exception e) {
                 e.printStackTrace();
             }
             switch (choice) {
                 case 0:
-                    System.out.println("\033[1;34m" + "TO MAIN MENU -->" + "\033[0m");
+                    System.out.println("\033[1;34mTO MAIN MENU -->\033[0m");
                     break;
                 case 1:
-                    controllerTwo.addWeatherForGivenCity();
+                    controller.addWeatherForGivenCity();
                     return;
                 case 2:
-                    controllerTwo.addWeatherForCoordinates();
+                    controller.addWeatherForCoordinates();
                     return;
                 default:
-                    System.out.println("*** Enter a number between 0 and 2 ***");
+                    System.out.println("\033[1;34m*** ENTER A NUMBER BETWEEN 0 AND 2 ***\033[0m");
             }
         }
     }
@@ -77,24 +79,24 @@ public class UserInterface {
         Integer choice = -1;
 
         while (choice != 0) {
-            controllerTwo.printDeletingSubmenu();
+            controller.printDeletingSubmenu();
             try {
-                choice = controllerTwo.getUserChoice("Enter your choice:", Integer.class);
+                choice = controller.getUserChoice("ENTER YOUR CHOICE:", Integer.class);
             } catch (Exception e) {
                 e.printStackTrace();
             }
             switch (choice) {
                 case 0:
-                    System.out.println("\033[1;34m" + "TO MAIN MENU -->" + "\033[0m");
+                    System.out.println("\033[1;34mTO MAIN MENU -->\033[0m");
                     break;
                 case 1:
-                    controllerTwo.deleteWeatherForGivenCity();
+                    controller.deleteWeatherForGivenCity();
                     return;
                 case 2:
-                    controllerTwo.deleteWeatherForId();
+                    controller.deleteWeatherForId();
                     return;
                 default:
-                    System.out.println("*** Enter a number between 0 and 2 ***");
+                    System.out.println("\033[1;34m*** ENTER A NUMBER BETWEEN 0 AND 2 ***\033[0m");
             }
         }
     }
@@ -105,33 +107,33 @@ public class UserInterface {
         Integer choice = -1;
 
         while (choice != 0) {
-            controllerTwo.printDisplayingSubmenu();
+            controller.printDisplayingSubmenu();
             try {
-                choice = controllerTwo.getUserChoice("Enter your choice:", Integer.class);
+                choice = controller.getUserChoice("ENTER YOUR CHOICE:", Integer.class);
             } catch (Exception e) {
                 e.printStackTrace();
             }
             switch (choice) {
                 case 0:
-                    System.out.println("\033[1;34m" + "TO MAIN MENU -->" + "\033[0m");
+                    System.out.println("\033[1;34mTO MAIN MENU -->\033[0m");
                     break;
                 case 1:
-                    controllerTwo.listAllWeathers();
+                    controller.displayAllWeathers();
                     return;
                 case 2:
-                    controllerTwo.findWeatherForGivenWeatherId();
+                    controller.displayWeatherForGivenWeatherId();
                     return;
                 case 3:
-                    controllerTwo.findWeatherForGivenCity();
+                    controller.displayWeatherForGivenCity();
                     return;
                 case 4:
-                    controllerTwo.findWeatherForGivenCoordinatesAndDate();
+                    controller.displayWeatherForGivenCoordinatesAndDate();
                     return;
                 case 5:
-                    controllerTwo.findWeatherForGivenCityAndDate();
+                    controller.displayWeatherForGivenCityAndDate();
                     return;
                 default:
-                    System.out.println("*** Enter a number between 0 and 5 ***");
+                    System.out.println("\033[1;34m*** ENTER A NUMBER BETWEEN 0 AND 5 ***\033[0m");
             }
         }
     }

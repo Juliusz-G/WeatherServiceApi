@@ -1,9 +1,8 @@
 package dao;
 
 import connection.HibernateUtil;
+import lombok.extern.log4j.Log4j2;
 import model.entity.WeatherEntity;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -11,11 +10,9 @@ import org.hibernate.Transaction;
 import java.util.Collections;
 import java.util.List;
 
+@Log4j2
 public class WeatherDao {
 
-    private final Logger logger = LogManager.getLogger(WeatherDao.class);
-
-    //Data Access Object - DAO, CRUD operations on database objects
     //-----Create-----
 
     public void save(WeatherEntity weatherEntity) {
@@ -32,7 +29,7 @@ public class WeatherDao {
             if (transaction != null)
                 transaction.rollback();
 
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
     }
 
@@ -53,7 +50,7 @@ public class WeatherDao {
             if (transaction != null)
                 transaction.rollback();
 
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
 
         return null;
@@ -77,7 +74,7 @@ public class WeatherDao {
             if (transaction != null)
                 transaction.rollback();
 
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
 
         return null;
@@ -100,7 +97,7 @@ public class WeatherDao {
             if (transaction != null)
                 transaction.rollback();
 
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
 
         return Collections.emptyList();
@@ -125,7 +122,7 @@ public class WeatherDao {
             if (transaction != null)
                 transaction.rollback();
 
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
         return null;
     }
@@ -148,7 +145,7 @@ public class WeatherDao {
             if (transaction != null)
                 transaction.rollback();
 
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
         return null;
     }
@@ -174,7 +171,7 @@ public class WeatherDao {
             if (transaction != null)
                 transaction.rollback();
 
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
         return null;
     }
@@ -195,7 +192,7 @@ public class WeatherDao {
             if (transaction != null)
                 transaction.rollback();
 
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
     }
 
@@ -203,14 +200,19 @@ public class WeatherDao {
 
     public void delete(WeatherEntity weatherEntity) {
         Transaction transaction = null;
+
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
+
             session.delete(weatherEntity);
+
             transaction.commit();
+
         } catch (HibernateException e) {
             if (transaction != null)
                 transaction.rollback();
-            logger.error(e.getMessage(), e);
+
+            log.error(e.getMessage(), e);
         }
     }
 }

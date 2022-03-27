@@ -11,8 +11,6 @@ import java.sql.Timestamp;
 @Data
 public class WeatherDto {
 
-    //Data transfer Object - DTO
-
     private int weatherId;
     private String cityName;
     private double lon;

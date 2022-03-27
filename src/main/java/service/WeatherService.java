@@ -1,10 +1,13 @@
 package service;
 
 import dao.WeatherDao;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import model.api.WeatherApi;
 import model.dto.WeatherDto;
 import model.entity.WeatherEntity;
+import validation.WeatherValidator;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -17,28 +20,20 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class WeatherService {
 
-    private final WeatherRepository weatherRepository;
-    private final WeatherDao weatherDao;
-    private final WeatherTransformer weatherTransformer;
-    private final WeatherValidator weatherValidator;
-
-    public WeatherService(WeatherRepository weatherRepository, WeatherDao weatherDao,
-                          WeatherTransformer weatherTransformer, WeatherValidator weatherValidator) {
-        this.weatherRepository = weatherRepository;
-        this.weatherDao = weatherDao;
-        this.weatherTransformer = weatherTransformer;
-        this.weatherValidator = weatherValidator;
-    }
+    private WeatherRepository weatherRepository = new WeatherRepository();
+    private WeatherDao weatherDao = new WeatherDao();
+    private WeatherTransformer weatherTransformer = new WeatherTransformer();
+    private WeatherValidator weatherValidator = new WeatherValidator();
 
     public WeatherApi addWeatherForCoordinates(String apiUrl, String lon, String lat, String date) {
         if (weatherDao.findByCoordinatesAndDate(lon, lat, date).isEmpty()) {
-            WeatherApi resultFromWeatherApi = weatherRepository
-                    .jsonDeserialization(String
-                            .format(apiUrl, lon, lat), WeatherApi.class
-                    );
+            WeatherApi resultFromWeatherApi = weatherRepository.jsonDeserialization(String.format(apiUrl, lon, lat),
+                    WeatherApi.class);
             if (resultFromWeatherApi != null) {
                 addToDatabase(resultFromWeatherApi, date);
             }
@@ -50,10 +45,8 @@ public class WeatherService {
 
     public WeatherApi addWeatherForGivenCity(String apiUrl, String cityName, String date) {
         if (weatherDao.findByCityAndDate(cityName, date).isEmpty()) {
-            WeatherApi resultFromWeatherApi = weatherRepository
-                    .jsonDeserialization(String
-                            .format(apiUrl, cityName), WeatherApi.class
-                    );
+            WeatherApi resultFromWeatherApi = weatherRepository.jsonDeserialization(String.format(apiUrl, cityName),
+                    WeatherApi.class);
             if (resultFromWeatherApi != null) {
                 addToDatabase(resultFromWeatherApi, date);
             }
@@ -85,7 +78,7 @@ public class WeatherService {
         weatherDao.delete(weatherDao.findById(id));
     }
 
-    public List<WeatherDto> listAllWeathers() {
+    public List<WeatherDto> findAllWeathers() {
         return weatherDao.findAllWeathers()
                 .stream()
                 .map(weatherTransformer::fromEntityToDto)
@@ -103,7 +96,7 @@ public class WeatherService {
                     .map(weatherTransformer::fromEntityToDto)
                     .collect(Collectors.toList());
         }
-        return listAllWeathers();
+        return findAllWeathers();
     }
 
     public List<WeatherDto> findWeatherForGivenCityAndDate(String cityName, String resultDate) {
@@ -146,7 +139,7 @@ public class WeatherService {
         return LocalDate.parse(resultDate, DateTimeFormatter.ofPattern("yyyy/MM/dd"));
     }
 
-    public List<String> displayDistinctCityNames() {
+    public List<String> findDistinctCityNames() {
         return weatherDao.findAllWeathers()
                 .stream()
                 .filter(distinctByKey(WeatherEntity::getCityName))
@@ -154,11 +147,18 @@ public class WeatherService {
                 .collect(Collectors.toList());
     }
 
-    public List<String> displayDistinctCoordinates() {
+    public List<String> findDistinctCoordinates() {
         return weatherDao.findAllWeathers()
                 .stream()
                 .filter(distinctByKey(WeatherEntity::getCityName))
                 .map(weatherEntity -> "Lon: " + weatherEntity.getLon() + " Lat: " + weatherEntity.getLat())
+                .collect(Collectors.toList());
+    }
+
+    public List<Integer> findAllIds() {
+        return weatherDao.findAllWeathers()
+                .stream()
+                .map(WeatherEntity::getWeatherId)
                 .collect(Collectors.toList());
     }
 
