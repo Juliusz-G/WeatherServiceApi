@@ -6,7 +6,9 @@ import model.entity.WeatherEntity;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Timestamp;
-import static org.junit.jupiter.api.Assertions.*;
+
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class WeatherTransformerTest {
     private final WeatherTransformer weatherTransformer = new WeatherTransformer();
@@ -43,6 +45,4 @@ class WeatherTransformerTest {
                 () -> assertEquals(weatherEntity.getWindSpeed(), listItem.getWind().getSpeed())
         );
     }
-
-
 }

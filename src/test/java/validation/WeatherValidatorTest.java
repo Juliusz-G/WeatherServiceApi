@@ -1,5 +1,7 @@
+package validation;
+
 import org.junit.jupiter.api.Test;
-import service.WeatherValidator;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -178,87 +180,76 @@ class WeatherValidatorTest {
     }
 
     @Test
-    void when_coordinateFormatValidation_is_valid_then_true_should_be_returned(){
+    void when_coordinateFormatValidation_is_valid_then_true_should_be_returned() {
         //given
         //when
-        boolean isValid=validation.coordinateFormatValidation("20.15");
+        boolean isValid = validation.coordinateFormatValidation("20.15");
         //then
         assertThat(isValid).isTrue();
     }
 
     @Test
-    void when_coordinateFormatValidation_is_not_valid_then_false_should_be_returned(){
+    void when_coordinateFormatValidation_is_not_valid_then_false_should_be_returned() {
         //given
         //when
-        boolean isValid=validation.coordinateFormatValidation("20a");
+        boolean isValid = validation.coordinateFormatValidation("20a");
         //then
         assertThat(isValid).isFalse();
     }
 
     @Test
-    void when_dateIsNotEmptyValidation_is_valid_then_true_should_be_returned(){
+    void when_dateIsNotEmptyValidation_is_valid_then_true_should_be_returned() {
         //given
         //when
-        boolean isValid=validation.dateIsNotEmptyValidation("2022/03/22");
+        boolean isValid = validation.dateIsNotEmptyValidation("2022/03/22");
         //then
         assertThat(isValid).isTrue();
     }
 
     @Test
-    void when_dateIsNotEmptyValidation_is_not_valid_then_true_should_be_returned(){
+    void when_dateIsNotEmptyValidation_is_not_valid_then_true_should_be_returned() {
         //given
         //when
-        boolean isValid=validation.dateIsNotEmptyValidation("");
+        boolean isValid = validation.dateIsNotEmptyValidation("");
 
         //then
         assertThat(isValid).isFalse();
     }
 
     @Test
-    void when_addWeatherDateValidation_is_valid_then_true_should_be_returned(){
+    void when_addWeatherDateValidation_is_valid_then_true_should_be_returned() {
         //given
-        String date=LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+        String date = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
         //when
-        boolean isValid=validation.addWeatherDateValidation(date);
+        boolean isValid = validation.addWeatherDateValidation(date);
         //then
         assertThat(isValid).isTrue();
     }
 
     @Test
-    void when_addWeatherDateValidation_is_not_valid_then_true_should_be_returned(){
+    void when_addWeatherDateValidation_is_not_valid_then_true_should_be_returned() {
         //given
         //when
-        boolean isValid=validation.addWeatherDateValidation("202/03/22");
+        boolean isValid = validation.addWeatherDateValidation("202/03/22");
         //then
         assertThat(isValid).isFalse();
     }
 
     @Test
-    void when_displayWeatherDateValidation_is_valid_then_true_should_be_returned(){
+    void when_displayWeatherDateValidation_is_valid_then_true_should_be_returned() {
         //given
         //when
-        boolean isValid=validation.displayWeatherDateValidation("2022/03/22");
+        boolean isValid = validation.displayWeatherDateValidation("2022/03/22");
         //then
         assertThat(isValid).isTrue();
     }
 
     @Test
-    void when_displayWeatherDateValidation_is_not_valid_then_true_should_be_returned(){
+    void when_displayWeatherDateValidation_is_not_valid_then_true_should_be_returned() {
         //given
         //when
-        boolean isValid=validation.displayWeatherDateValidation("202/03/22");
+        boolean isValid = validation.displayWeatherDateValidation("202/03/22");
         //then
         assertThat(isValid).isFalse();
     }
-
-
-
-
-
-
-
-
-
-
-
 }

@@ -9,6 +9,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import validation.WeatherValidator;
+
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -40,7 +42,7 @@ class WeatherServiceTest {
                 , 20, 45, 1005, 20, 35);
         Mockito.when(weatherDao.findAllWeathers()).thenReturn(List.of(weatherEntity1, weatherEntity2));
         //when
-        List<WeatherDto> weatherDtoList = weatherService.listAllWeathers();
+        List<WeatherDto> weatherDtoList = weatherService.findAllWeathers();
         //then
         assertAll(
                 () -> assertEquals(weatherDtoList.size(), 2),
@@ -69,7 +71,7 @@ class WeatherServiceTest {
     }
 
     @Test
-    void when_findWeatherForGivenCity_is_used_then_list_of_concrete_dto_objects_should_be_returned(){
+    void when_findWeatherForGivenCity_is_used_then_list_of_concrete_dto_objects_should_be_returned() {
         //given
         WeatherEntity weatherEntity1 = new WeatherEntity(1, 20, 50
                 , "Warsaw", Timestamp.valueOf("2022-03-25 15:00:00")
@@ -91,7 +93,7 @@ class WeatherServiceTest {
     }
 
     @Test
-    void when_findWeatherForGivenCity_is_used_and_cityName_is_not_valid_then_list_of_all_dto_objects_should_be_returned(){
+    void when_findWeatherForGivenCity_is_used_and_cityName_is_not_valid_then_list_of_all_dto_objects_should_be_returned() {
         //given
         WeatherEntity weatherEntity1 = new WeatherEntity(1, 20, 50
                 , "Warsaw", Timestamp.valueOf("2022-03-25 15:00:00")
@@ -113,7 +115,7 @@ class WeatherServiceTest {
     }
 
     @Test
-    void when_findWeatherForGivenCityAndDate_is_used_then_list_of_concrete_dto_objects_should_be_returned(){
+    void when_findWeatherForGivenCityAndDate_is_used_then_list_of_concrete_dto_objects_should_be_returned() {
         //given
         WeatherEntity weatherEntity1 = new WeatherEntity(1, 20, 50
                 , "Warsaw", Timestamp.valueOf("2022-03-25 15:00:00")
@@ -121,9 +123,9 @@ class WeatherServiceTest {
         WeatherEntity weatherEntity2 = new WeatherEntity(2, 20, 50
                 , "Warsaw", Timestamp.valueOf("2022-03-25 18:00:00")
                 , 20, 45, 1005, 20, 35);
-        Mockito.when(weatherDao.findByCityAndDate("Warsaw","2022/03/25")).thenReturn(List.of(weatherEntity1, weatherEntity2));
+        Mockito.when(weatherDao.findByCityAndDate("Warsaw", "2022/03/25")).thenReturn(List.of(weatherEntity1, weatherEntity2));
         //when
-        List<WeatherDto> weatherDtoList = weatherService.findWeatherForGivenCityAndDate("Warsaw","2022/03/25");
+        List<WeatherDto> weatherDtoList = weatherService.findWeatherForGivenCityAndDate("Warsaw", "2022/03/25");
         //then
         assertAll(
                 () -> assertEquals(weatherDtoList.size(), 2),
@@ -135,7 +137,7 @@ class WeatherServiceTest {
     }
 
     @Test
-    void when_findWeatherForGivenCityAndDate_is_used_and_cityName_is_not_valid_then_list_of_concrete_dto_objects_should_be_returned(){
+    void when_findWeatherForGivenCityAndDate_is_used_and_cityName_is_not_valid_then_list_of_concrete_dto_objects_should_be_returned() {
         //given
         WeatherEntity weatherEntity1 = new WeatherEntity(1, 20, 50
                 , "Warsaw", Timestamp.valueOf("2022-03-25 15:00:00")
@@ -145,7 +147,7 @@ class WeatherServiceTest {
                 , 20, 45, 1005, 20, 35);
         Mockito.when(weatherDao.findByDate("2022/03/25")).thenReturn(List.of(weatherEntity1, weatherEntity2));
         //when
-        List<WeatherDto> weatherDtoList = weatherService.findWeatherForGivenCityAndDate("","2022/03/25");
+        List<WeatherDto> weatherDtoList = weatherService.findWeatherForGivenCityAndDate("", "2022/03/25");
         //then
         assertAll(
                 () -> assertEquals(weatherDtoList.size(), 2),
@@ -157,35 +159,35 @@ class WeatherServiceTest {
     }
 
     @Test
-    void when_epochToLocalDate_is_used_then_localDate_should_be_returned(){
+    void when_epochToLocalDate_is_used_then_localDate_should_be_returned() {
         //given
         //when
-        LocalDate localDate=weatherService.epochToLocalDate(1648220400L);
+        LocalDate localDate = weatherService.epochToLocalDate(1648220400L);
         //then
-        assertEquals(LocalDate.of(2022,3,25),localDate);
+        assertEquals(LocalDate.of(2022, 3, 25), localDate);
     }
 
     @Test
-    void when_stringToLocalDate_is_used_and_date_is_valid_then_concrete_localDate_should_be_returned(){
+    void when_stringToLocalDate_is_used_and_date_is_valid_then_concrete_localDate_should_be_returned() {
         //given
-        String date=LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+        String date = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
         //when
-        LocalDate localDate=weatherService.stringToLocalDate(date);
+        LocalDate localDate = weatherService.stringToLocalDate(date);
         //then
-        assertEquals(LocalDate.now(),localDate);
+        assertEquals(LocalDate.now(), localDate);
     }
 
     @Test
-    void when_stringToLocalDate_is_used_and_date_is_not_valid_then_tomorrow_localDate_should_be_returned(){
+    void when_stringToLocalDate_is_used_and_date_is_not_valid_then_tomorrow_localDate_should_be_returned() {
         //given
         //when
-        LocalDate localDate=weatherService.stringToLocalDate("2022/03/2");
+        LocalDate localDate = weatherService.stringToLocalDate("2022/03/2");
         //then
-        assertEquals(LocalDate.now().plusDays(1),localDate);
+        assertEquals(LocalDate.now().plusDays(1), localDate);
     }
 
     @Test
-    void when_findAllByDate_is_used_then_concrete_dto_objects_should_be_returned(){
+    void when_findAllByDate_is_used_then_concrete_dto_objects_should_be_returned() {
         //given
         WeatherEntity weatherEntity1 = new WeatherEntity(1, 20, 50
                 , "Warsaw", Timestamp.valueOf("2022-03-25 15:00:00")
@@ -193,10 +195,10 @@ class WeatherServiceTest {
         WeatherEntity weatherEntity2 = new WeatherEntity(2, 30, 40
                 , "Krakow", Timestamp.valueOf("2022-03-25 18:00:00")
                 , 20, 45, 1005, 20, 35);
-        Mockito.when(weatherDao.findByDate("2022/03/25")).thenReturn(List.of(weatherEntity1,weatherEntity2));
+        Mockito.when(weatherDao.findByDate("2022/03/25")).thenReturn(List.of(weatherEntity1, weatherEntity2));
 
         //when
-        List<WeatherDto>weatherDtoList=weatherService.findAllByDate("2022/03/25");
+        List<WeatherDto> weatherDtoList = weatherService.findAllByDate("2022/03/25");
         //then
         assertAll(
                 () -> assertEquals(weatherDtoList.size(), 2),
@@ -208,7 +210,7 @@ class WeatherServiceTest {
     }
 
     @Test
-    void when_findWeatherForGivenCoordinatesAndDate_is_used_then_list_of_concrete_dto_objects_should_be_returned(){
+    void when_findWeatherForGivenCoordinatesAndDate_is_used_then_list_of_concrete_dto_objects_should_be_returned() {
         //given
         WeatherEntity weatherEntity1 = new WeatherEntity(1, 20, 50
                 , "Warsaw", Timestamp.valueOf("2022-03-25 15:00:00")
@@ -216,9 +218,9 @@ class WeatherServiceTest {
         WeatherEntity weatherEntity2 = new WeatherEntity(2, 20, 50
                 , "Warsaw", Timestamp.valueOf("2022-03-25 18:00:00")
                 , 20, 45, 1005, 20, 35);
-        Mockito.when(weatherDao.findByCoordinatesAndDate("20","50","2022/03/25")).thenReturn(List.of(weatherEntity1,weatherEntity2));
+        Mockito.when(weatherDao.findByCoordinatesAndDate("20", "50", "2022/03/25")).thenReturn(List.of(weatherEntity1, weatherEntity2));
         //when
-        List<WeatherDto>weatherDtoList=weatherService.findWeatherForGivenCoordinatesAndDate("20","50","2022/03/25");
+        List<WeatherDto> weatherDtoList = weatherService.findWeatherForGivenCoordinatesAndDate("20", "50", "2022/03/25");
         //then
         assertAll(
                 () -> assertEquals(weatherDtoList.size(), 2),
@@ -230,7 +232,7 @@ class WeatherServiceTest {
     }
 
     @Test
-    void when_findWeatherForGivenCoordinatesAndDate_is_used_and_date_is_not_valid_then_list_of_concrete_dto_objects_should_be_returned(){
+    void when_findWeatherForGivenCoordinatesAndDate_is_used_and_date_is_not_valid_then_list_of_concrete_dto_objects_should_be_returned() {
         //given
         WeatherEntity weatherEntity1 = new WeatherEntity(1, 20, 50
                 , "Warsaw", Timestamp.valueOf("2022-03-25 15:00:00")
@@ -238,9 +240,9 @@ class WeatherServiceTest {
         WeatherEntity weatherEntity2 = new WeatherEntity(2, 20, 50
                 , "Warsaw", Timestamp.valueOf("2022-03-25 18:00:00")
                 , 20, 45, 1005, 20, 35);
-        Mockito.when(weatherDao.findByDate("2022/03/25")).thenReturn(List.of(weatherEntity1,weatherEntity2));
+        Mockito.when(weatherDao.findByDate("2022/03/25")).thenReturn(List.of(weatherEntity1, weatherEntity2));
         //when
-        List<WeatherDto>weatherDtoList=weatherService.findWeatherForGivenCoordinatesAndDate("20","","2022/03/25");
+        List<WeatherDto> weatherDtoList = weatherService.findWeatherForGivenCoordinatesAndDate("20", "", "2022/03/25");
         //then
         assertAll(
                 () -> assertEquals(weatherDtoList.size(), 2),
@@ -252,7 +254,7 @@ class WeatherServiceTest {
     }
 
     @Test
-    void when_displayDistinctCityNames_is_used_then_distinct_cityNames_should_be_returned(){
+    void when_displayDistinctCityNames_is_used_then_distinct_cityNames_should_be_returned() {
         //given
         WeatherEntity weatherEntity1 = new WeatherEntity(1, 20, 50
                 , "Warsaw", Timestamp.valueOf("2022-03-25 15:00:00")
@@ -263,19 +265,19 @@ class WeatherServiceTest {
         WeatherEntity weatherEntity3 = new WeatherEntity(2, 30, 40
                 , "Krakow", Timestamp.valueOf("2022-03-25 18:00:00")
                 , 20, 45, 1005, 20, 35);
-        Mockito.when(weatherDao.findAllWeathers()).thenReturn(List.of(weatherEntity1,weatherEntity2,weatherEntity3));
+        Mockito.when(weatherDao.findAllWeathers()).thenReturn(List.of(weatherEntity1, weatherEntity2, weatherEntity3));
         //when
-        List<String>cityNames=weatherService.displayDistinctCityNames();
+        List<String> cityNames = weatherService.findDistinctCityNames();
         //then
         assertAll(
-                ()->assertEquals(2,cityNames.size()),
-                ()->assertTrue(cityNames.contains("Warsaw")),
-                ()->assertTrue(cityNames.contains("Krakow"))
+                () -> assertEquals(2, cityNames.size()),
+                () -> assertTrue(cityNames.contains("Warsaw")),
+                () -> assertTrue(cityNames.contains("Krakow"))
         );
     }
 
     @Test
-    void when_displayDistinctCoordinates_is_used_then_distinct_cityNames_should_be_returned(){
+    void when_displayDistinctCoordinates_is_used_then_distinct_cityNames_should_be_returned() {
         //given
         WeatherEntity weatherEntity1 = new WeatherEntity(1, 20, 50
                 , "Warsaw", Timestamp.valueOf("2022-03-25 15:00:00")
@@ -286,12 +288,10 @@ class WeatherServiceTest {
         WeatherEntity weatherEntity3 = new WeatherEntity(2, 30, 40
                 , "Krakow", Timestamp.valueOf("2022-03-25 18:00:00")
                 , 20, 45, 1005, 20, 35);
-        Mockito.when(weatherDao.findAllWeathers()).thenReturn(List.of(weatherEntity1,weatherEntity2,weatherEntity3));
+        Mockito.when(weatherDao.findAllWeathers()).thenReturn(List.of(weatherEntity1, weatherEntity2, weatherEntity3));
         //when
-        List<String>coordinates=weatherService.displayDistinctCoordinates();
+        List<String> coordinates = weatherService.findDistinctCoordinates();
         //then
-        assertEquals(2,coordinates.size());
+        assertEquals(2, coordinates.size());
     }
-
-
 }
