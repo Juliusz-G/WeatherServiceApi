@@ -13,34 +13,34 @@ public class UserInterface {
         Integer choice = -1;
 
         while (choice != 0) {
-            System.out.println("\033[1;34m" + "------------------------MAIN MENU-------------------------" + "\033[0m");
+            System.out.println("\033[1;34m------------------------MAIN MENU-------------------------\033[0m");
             controller.printMainMenu();
             try {
-                choice = controller.getUserChoice("Enter your choice:", Integer.class);
+                choice = controller.getUserChoice("ENTER YOUR CHOICE:", Integer.class);
             } catch (Exception e) {
                 e.printStackTrace();
             }
             switch (choice) {
                 case 0:
-                    System.out.println("\033[1;34m" + "CLOSING... THANK YOU!" + "\033[0m");
+                    System.out.println("\033[1;34mCLOSING... THANK YOU!\033[0m");
                     break;
                 case 1:
-                    System.out.println("\033[1;34m" + "TO ADDING SUBMENU -->" + "\033[0m");
+                    System.out.println("\033[1;34mTO ADDING SUBMENU -->\033[0m");
                     addingSubmenu();
                     break;
                 case 2:
-                    System.out.println("\033[1;34m" + "TO DELETING SUBMENU -->" + "\033[0m");
+                    System.out.println("\033[1;34mTO DELETING SUBMENU -->\033[0m");
                     deletingSubmenu();
                     break;
                 case 3:
                     controller.updateWeatherForGivenCity();
                     break;
                 case 4:
-                    System.out.println("\033[1;34m" + "TO DISPLAYING SUBMENU -->" + "\033[0m");
+                    System.out.println("\033[1;34mTO DISPLAYING SUBMENU -->\033[0m");
                     displayingSubmenu();
                     break;
                 default:
-                    System.out.println("*** Enter a number between 0 and 4 ***");
+                    System.out.println("\033[1;34m*** ENTER A NUMBER BETWEEN 0 AND 4 ***\033[0m");
             }
         }
     }
@@ -53,13 +53,13 @@ public class UserInterface {
         while (choice != 0) {
             controller.printAddingSubmenu();
             try {
-                choice = controller.getUserChoice("Enter your choice:", Integer.class);
+                choice = controller.getUserChoice("ENTER YOUR CHOICE:", Integer.class);
             } catch (Exception e) {
                 e.printStackTrace();
             }
             switch (choice) {
                 case 0:
-                    System.out.println("\033[1;34m" + "TO MAIN MENU -->" + "\033[0m");
+                    System.out.println("\033[1;34mTO MAIN MENU -->\033[0m");
                     break;
                 case 1:
                     controller.addWeatherForGivenCity();
@@ -68,7 +68,7 @@ public class UserInterface {
                     controller.addWeatherForCoordinates();
                     return;
                 default:
-                    System.out.println("*** Enter a number between 0 and 2 ***");
+                    System.out.println("\033[1;34m*** ENTER A NUMBER BETWEEN 0 AND 2 ***\033[0m");
             }
         }
     }
@@ -81,13 +81,13 @@ public class UserInterface {
         while (choice != 0) {
             controller.printDeletingSubmenu();
             try {
-                choice = controller.getUserChoice("Enter your choice:", Integer.class);
+                choice = controller.getUserChoice("ENTER YOUR CHOICE:", Integer.class);
             } catch (Exception e) {
                 e.printStackTrace();
             }
             switch (choice) {
                 case 0:
-                    System.out.println("\033[1;34m" + "TO MAIN MENU -->" + "\033[0m");
+                    System.out.println("\033[1;34mTO MAIN MENU -->\033[0m");
                     break;
                 case 1:
                     controller.deleteWeatherForGivenCity();
@@ -96,7 +96,7 @@ public class UserInterface {
                     controller.deleteWeatherForId();
                     return;
                 default:
-                    System.out.println("*** Enter a number between 0 and 2 ***");
+                    System.out.println("\033[1;34m*** ENTER A NUMBER BETWEEN 0 AND 2 ***\033[0m");
             }
         }
     }
@@ -109,31 +109,31 @@ public class UserInterface {
         while (choice != 0) {
             controller.printDisplayingSubmenu();
             try {
-                choice = controller.getUserChoice("Enter your choice:", Integer.class);
+                choice = controller.getUserChoice("ENTER YOUR CHOICE:", Integer.class);
             } catch (Exception e) {
                 e.printStackTrace();
             }
             switch (choice) {
                 case 0:
-                    System.out.println("\033[1;34m" + "TO MAIN MENU -->" + "\033[0m");
+                    System.out.println("\033[1;34mTO MAIN MENU -->\033[0m");
                     break;
                 case 1:
-                    controller.listAllWeathers();
+                    controller.displayAllWeathers();
                     return;
                 case 2:
-                    controller.findWeatherForGivenWeatherId();
+                    controller.displayWeatherForGivenWeatherId();
                     return;
                 case 3:
-                    controller.findWeatherForGivenCity();
+                    controller.displayWeatherForGivenCity();
                     return;
                 case 4:
-                    controller.findWeatherForGivenCoordinatesAndDate();
+                    controller.displayWeatherForGivenCoordinatesAndDate();
                     return;
                 case 5:
-                    controller.findWeatherForGivenCityAndDate();
+                    controller.displayWeatherForGivenCityAndDate();
                     return;
                 default:
-                    System.out.println("*** Enter a number between 0 and 5 ***");
+                    System.out.println("\033[1;34m*** ENTER A NUMBER BETWEEN 0 AND 5 ***\033[0m");
             }
         }
     }
