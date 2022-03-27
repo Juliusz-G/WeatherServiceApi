@@ -1,14 +1,11 @@
 package gui;
 
-import dao.WeatherDao;
-import lombok.extern.log4j.Log4j2;
-import model.api.WeatherApi;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import service.WeatherRepository;
+import lombok.extern.log4j.Log4j2;
+import model.api.WeatherApi;
 import service.WeatherService;
-import service.WeatherTransformer;
 import validation.WeatherValidator;
 
 import java.time.LocalDate;
@@ -27,62 +24,57 @@ public class Controller {
             "https://api.openweathermap.org/data/2.5/forecast?q=%s&units=metric&appid=" + API_KEY;
     private final String API_URL_COORDINATES =
             "https://api.openweathermap.org/data/2.5/forecast?lat=%s&lon=%s&units=metric&appid=" + API_KEY;
-    private WeatherService weatherService = new WeatherService(
-            new WeatherRepository(),
-            new WeatherDao(),
-            new WeatherTransformer(),
-            new WeatherValidator()
-    );
+    private WeatherService weatherService = new WeatherService();
     private final WeatherValidator weatherValidator = new WeatherValidator();
 
-    //-----Menu structure-----
+    //---------------------------------------------Displaying Menu Methods----------------------------------------------
 
-    //gui.Main menu
+    //Main menu
     public void printMainMenu() {
         System.out.println();
         System.out.println("==========================================================");
-        System.out.println("[1] Add weather (Submenu).");
-        System.out.println("[2] Delete weather (Submenu).");
-        System.out.println("[3] Update weather for city.");
-        System.out.println("[4] Display weather (Submenu).");
+        System.out.println("[1] ADD WEATHER (SUBMENU)");
+        System.out.println("[2] DELETE WEATHER (SUBMENU)");
+        System.out.println("[3] UPDATE WEATHER FOR CITY");
+        System.out.println("[4] DISPLAY WEATHER (SUBMENU)");
         System.out.println("[0] EXIT");
         System.out.println("==========================================================");
     }
 
-    //Submenu for displaying
+    //Displaying Submenu
     public void printDisplayingSubmenu() {
         System.out.println();
         System.out.println("==========================================================");
-        System.out.println("[1] Display all weathers.");
-        System.out.println("[2] Display weather by ID.");
-        System.out.println("[3] Display weather by city.");
-        System.out.println("[4] Display weather by coordinates.");
-        System.out.println("[5] Display weather by city and date.");
+        System.out.println("[1] DISPLAY ALL WEATHERS");
+        System.out.println("[2] DISPLAY WEATHER BY ID");
+        System.out.println("[3] DISPLAY WEATHER BY CITY");
+        System.out.println("[4] DISPLAY WEATHER BY COORDINATES");
+        System.out.println("[5] DISPLAY WEATHER BY CITY AND DATE");
         System.out.println("[0] BACK");
         System.out.println("==========================================================");
     }
 
-    //Submenu for adding
+    //Adding Submenu
     public void printAddingSubmenu() {
         System.out.println();
         System.out.println("==========================================================");
-        System.out.println("[1] Add by city.");
-        System.out.println("[2] Add by coordinates.");
+        System.out.println("[1] ADD BY CITY");
+        System.out.println("[2] ADD BY COORDINATES");
         System.out.println("[0] BACK");
         System.out.println("==========================================================");
     }
 
-    //Submenu for deleting
+    //Deleting Submenu
     public void printDeletingSubmenu() {
         System.out.println();
         System.out.println("==========================================================");
-        System.out.println("[1] Delete by city.");
-        System.out.println("[2] Delete by ID.");
+        System.out.println("[1] DELETE BY CITY");
+        System.out.println("[2] DELETE BY ID");
         System.out.println("[0] BACK");
         System.out.println("==========================================================");
     }
 
-    //Gets user input (Any type)
+    //Gets user input
     public <T> T getUserChoice(String message, Class<T> c) {
         System.out.println(message);
         Scanner scanner = new Scanner(System.in);
@@ -94,205 +86,227 @@ public class Controller {
         } catch (InputMismatchException e) {
             log.error(e.getMessage(), e);
         }
-        return null;
+        return (T) getUserChoice("ENTER AGAIN: ", Integer.class);
     }
 
-    //-----Methods available in main menu-----
+    //-------------------------------------------------Deleting Methods-------------------------------------------------
 
-    //[2] Delete 5-day weather for given city
+    //Delete for city
     public void deleteWeatherForGivenCity() {
-        displayDistinctCityNames();
-        String cityName = null;
-
-        try {
-            cityName = getUserChoice("Enter city name: ", String.class);
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (!displayDistinctCityNames()) {
+            return;
         }
 
-        weatherService.deleteWeatherForGivenCity(cityName);
-        System.out.println(cityName + " successfully deleted!");
+        String cityName = getUserChoice("ENTER CITY NAME: ", String.class);
+
+        if (weatherService.findDistinctCityNames().contains(cityName)) {
+            weatherService.deleteWeatherForGivenCity(cityName);
+            System.out.println(cityName + " SUCCESSFULLY DELETED!");
+        } else {
+            System.out.println("CITY NAMED \"" + cityName + "\" DON'T EXISTS!");
+        }
     }
 
+    //Delete for id
     public void deleteWeatherForId() {
-        Integer weatherId = null;
-
-        try {
-            weatherId = getUserChoice("Enter weather ID: ", Integer.class);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
+        if (!displayAllIds()) {
+            return;
         }
+
+        Integer weatherId = getUserChoice("ENTER WEATHER ID: ", Integer.class);
+        int listSizeBeforeDelete = weatherService.getWeatherDao().findAllWeathers().size();
 
         weatherService.deleteWeatherForGivenId(weatherId);
-        System.out.println(weatherId + " successfully deleted!");
+
+        if (listSizeBeforeDelete > weatherService.getWeatherDao().findAllWeathers().size()) {
+            System.out.println(weatherId + " SUCCESSFULLY DELETED!");
+        } else {
+            System.out.println("CITY WITH ID \"" + weatherId + "\" DON'T EXISTS!");
+        }
     }
 
-    //[3] Update 5-day weather for given city
-    public void updateWeatherForGivenCity() {
-        displayDistinctCityNames();
-        String cityName = null;
+    //-------------------------------------------------Updating Methods-------------------------------------------------
 
-        try {
-            cityName = getUserChoice("Enter city name: ", String.class);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
+    //Update for city
+    public void updateWeatherForGivenCity() {
+        if (!displayDistinctCityNames()) {
+            return;
         }
+
+        String cityName = getUserChoice("ENTER CITY NAME: ", String.class);
 
         weatherService.updateWeatherForGivenCity(cityName);
-        System.out.println(cityName + " successfully updated!");
+        System.out.println(cityName + " SUCCESSFULLY UPDATED!");
     }
 
-    //-----Methods available in submenu ([1] Add 5-day weather)-----
+    //--------------------------------------------------Adding Methods--------------------------------------------------
 
-    //[1] Add by city
+    //Add for city
     public void addWeatherForGivenCity() {
-        String cityName = null;
-        String year;
-        String month;
-        String day;
-        String date = null;
-        try {
-            cityName = getUserChoice("Enter city name: ", String.class);
-            System.out.printf("SELECT DATE BETWEEN %s AND %s", LocalDate.now(), LocalDate.now().plusDays(5)).println();
-            year = getUserChoice("Enter year: ", String.class);
-            month = getUserChoice("Enter month: ", String.class);
-            day = getUserChoice("Enter day: ", String.class);
-            date = String.format("%s/%s/%s", year, month, day);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
+        String cityName = getUserChoice("ENTER CITY NAME: ", String.class);
+        System.out.printf("SELECT DATE BETWEEN %s AND %s", LocalDate.now(), LocalDate.now().plusDays(5)).println();
+        String year = getUserChoice("ENTER YEAR: ", String.class);
+        String month = getUserChoice("ENTER MONTH: ", String.class);
+        String day = getUserChoice("ENTER DAY: ", String.class);
+        String date = String.format("%s/%s/%s", year, month, day);
+
         String resultDate = weatherValidator.addWeatherDateValidation(date) ? date :
                 LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
         String resultCityName = weatherValidator.cityNameValidation(cityName) ? cityName : "";
         WeatherApi weatherApi = weatherService.addWeatherForGivenCity(API_URL_CITY, resultCityName, resultDate);
-        System.out.println(weatherApi != null ? weatherApi.getCity().getName() + " successfully added!" :
-                " cannot find city!");
+        System.out.println(weatherApi != null ? weatherApi.getCity().getName() + " SUCCESSFULLY ADDED!" :
+                "CANNOT FIND CITY!");
     }
 
-    //[2] Add by coordinates
+    //Add for coordinates
     public void addWeatherForCoordinates() {
-        String lon = null;
-        String lat = null;
-        String year;
-        String month;
-        String day;
-        String date = null;
-        try {
-            lon = getUserChoice("Enter lon: ", String.class);
-            lat = getUserChoice("Enter lat: ", String.class);
-            year = getUserChoice("Enter year: ", String.class);
-            month = getUserChoice("Enter month: ", String.class);
-            day = getUserChoice("Enter day: ", String.class);
-            date = String.format("%s/%s/%s", year, month, day);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
+        String lon = getUserChoice("ENTER LON: ", String.class);
+        String lat = getUserChoice("ENTER LAT: ", String.class);
+        String year = getUserChoice("ENTER YEAR: ", String.class);
+        String month = getUserChoice("ENTER MONTH: ", String.class);
+        String day = getUserChoice("ENTER DAY: ", String.class);
+        String date = String.format("%s/%s/%s", year, month, day);
+
         String resultDate = weatherValidator.addWeatherDateValidation(date) ? date :
                 LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
         String longitude = weatherValidator.longitudeValidation(lon) ? lon : "";
         String latitude = weatherValidator.latitudeValidation(lat) ? lat : "";
-        WeatherApi weatherApi = weatherService.addWeatherForCoordinates(API_URL_COORDINATES, longitude, latitude, resultDate);
-        System.out.println(weatherApi != null ? weatherApi.getCity().getName() + " successfully added!" :
-                " cannot find city!");
+        WeatherApi weatherApi = weatherService.addWeatherForCoordinates(API_URL_COORDINATES, longitude, latitude,
+                resultDate);
+        System.out.println(weatherApi != null ? weatherApi.getCity().getName() + " SUCCESSFULLY ADDED!" :
+                "CANNOT FIND CITY!");
     }
 
-    //-----Methods available in submenu ([4] Display weather)-----
+    //-------------------------------------------------Display Methods--------------------------------------------------
 
-    public void listAllWeathers() {
-        System.out.println("List of all weathers: ");
-        weatherService.listAllWeathers().forEach(System.out::println);
+    //Display all
+    public void displayAllWeathers() {
+        if (weatherService.findAllWeathers().isEmpty()) {
+            System.out.println("THERE IS NO WEATHERS TO DISPLAY! ADD FIRST!");
+        } else {
+            System.out.println("LIST OF ALL WEATHERS: ");
+            weatherService.findAllWeathers().forEach(System.out::println);
+        }
     }
 
-    public void findWeatherForGivenWeatherId() {
-        Integer weatherId = null;
-
-        try {
-            weatherId = getUserChoice("Enter weather ID: ", Integer.class);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
+    //Display for id
+    public void displayWeatherForGivenWeatherId() {
+        if (!displayAllIds()) {
+            return;
         }
 
-        System.out.printf("Weather for weatherId = %s:%n", weatherId);
-        System.out.println(weatherService.findWeatherForGivenWeatherId(weatherId));
+        Integer weatherId = getUserChoice("ENTER WEATHER ID: ", Integer.class);
+
+        if (weatherService.findWeatherForGivenWeatherId(weatherId) == null) {
+            System.out.printf("WEATHER WITH ID = %s DOES NOT EXIST!%n", weatherId);
+        } else {
+            System.out.printf("WEATHER FOR ID = %s:%n", weatherId);
+            System.out.println(weatherService.findWeatherForGivenWeatherId(weatherId));
+        }
     }
 
-    public void findWeatherForGivenCity() {
-        displayDistinctCityNames();
-        String cityName = null;
-
-        try {
-            cityName = getUserChoice("Enter city name: ", String.class);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
+    //Display for city
+    public void displayWeatherForGivenCity() {
+        if (!displayDistinctCityNames()) {
+            return;
         }
 
-        System.out.printf("Weather for %s:%n", cityName);
-        String resultCityName = weatherValidator.cityNameValidation(cityName) ? cityName : "";
-        weatherService.findWeatherForGivenCity(resultCityName).forEach(System.out::println);
-    }
+        String cityName = getUserChoice("ENTER CITY NAME: ", String.class);
 
-    public void findWeatherForGivenCityAndDate() {
-        displayDistinctCityNames();
-        String cityName = null;
-        String year;
-        String month;
-        String day;
-        String date = null;
-
-        try {
-            cityName = getUserChoice("Enter city name: ", String.class);
-            year = getUserChoice("Enter year: ", String.class);
-            month = getUserChoice("Enter month: ", String.class);
-            day = getUserChoice("Enter day: ", String.class);
-            date = String.format("%s/%s/%s", year, month, day);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
+        if (weatherService.findWeatherForGivenCity(cityName).isEmpty()) {
+            System.out.printf("THERE IS NO WEATHER FOR CITY NAMED \"%s\"!%n", cityName);
+        } else {
+            System.out.printf("WEATHER FOR %s:%n", cityName);
+            weatherService.findWeatherForGivenCity(cityName).forEach(System.out::println);
         }
-        String resultDate = weatherValidator.displayWeatherDateValidation(date) ? date :
-                LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-        String resultCityName = weatherValidator.cityNameValidation(cityName) ? cityName : "";
-        weatherService.findWeatherForGivenCityAndDate(resultCityName, resultDate).forEach(System.out::println);
     }
 
-    public void findWeatherForGivenCoordinatesAndDate() {
-        displayDistinctCoordinates();
-        String lon = null;
-        String lat = null;
-        String year;
-        String month;
-        String day;
-        String date = null;
-
-        try {
-            lon = getUserChoice("Enter lon: ", String.class);
-            lat = getUserChoice("Enter lat: ", String.class);
-            year = getUserChoice("Enter year: ", String.class);
-            month = getUserChoice("Enter month: ", String.class);
-            day = getUserChoice("Enter day: ", String.class);
-            date = String.format("%s/%s/%s", year, month, day);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
+    //Display for city and date
+    public void displayWeatherForGivenCityAndDate() {
+        if (!displayDistinctCityNames()) {
+            return;
         }
-        String resultDate = weatherValidator.displayWeatherDateValidation(date) ? date :
-                LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-        String longitude = weatherValidator.longitudeValidation(lon) ? lon : "";
-        String latitude = weatherValidator.latitudeValidation(lon) ? lon : "";
-        System.out.printf("Weather for %s %s %s:%n", lon, lat, date);
-        weatherService.findWeatherForGivenCoordinatesAndDate(longitude, latitude, resultDate)
-                .forEach(System.out::println);
+
+        String cityName = getUserChoice("ENTER CITY NAME: ", String.class);
+        String year = getUserChoice("ENTER YEAR: ", String.class);
+        String month = getUserChoice("ENTER MONTH: ", String.class);
+        String day = getUserChoice("ENTER DAY: ", String.class);
+        String date = String.format("%s/%s/%s", year, month, day);
+
+        if (weatherService.findWeatherForGivenCityAndDate(cityName, date).isEmpty()) {
+            System.out.printf("THERE IS NO WEATHER FOR CITY NAMED \"%s\"!%n", cityName);
+        } else {
+            System.out.printf("WEATHER FOR %s:%n", cityName);
+            weatherService.findWeatherForGivenCityAndDate(cityName, date).forEach(System.out::println);
+        }
+
+//        String resultDate = weatherValidator.displayWeatherDateValidation(date) ? date :
+//                LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+//        String resultCityName = weatherValidator.cityNameValidation(cityName) ? cityName : "";
+//        weatherService.findWeatherForGivenCityAndDate(resultCityName, resultDate).forEach(System.out::println);
     }
 
+    //Display for coordinates and date
+    public void displayWeatherForGivenCoordinatesAndDate() {
+        if (!displayDistinctCoordinates()) {
+            return;
+        }
 
-    //-----Additional methods-----
+        String lon = getUserChoice("ENTER LON: ", String.class);
+        String lat = getUserChoice("ENTER LAT: ", String.class);
+        String year = getUserChoice("ENTER YEAR: ", String.class);
+        String month = getUserChoice("ENTER MONTH: ", String.class);
+        String day = getUserChoice("ENTER DAY: ", String.class);
+        String date = String.format("%s/%s/%s", year, month, day);
 
-    private void displayDistinctCityNames() {
-        System.out.println("Available cities: ");
-        System.out.println(weatherService.displayDistinctCityNames());
+        if (weatherService.findWeatherForGivenCoordinatesAndDate(lon, lat, date).isEmpty()) {
+            System.out.printf("THERE IS NO WEATHER FOR COORDINATES (%s, %s)!%n", lon, lat);
+        } else {
+            System.out.printf("WEATHER FOR %s %s %s:%n", lon, lat, date);
+            weatherService.findWeatherForGivenCoordinatesAndDate(lon, lat, date).forEach(System.out::println);
+        }
+
+//        String resultDate = weatherValidator.displayWeatherDateValidation(date) ? date :
+//                LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+//        String longitude = weatherValidator.longitudeValidation(lon) ? lon : "";
+//        String latitude = weatherValidator.latitudeValidation(lon) ? lon : "";
+//        System.out.printf("Weather for %s %s %s:%n", lon, lat, date);
+//        weatherService.findWeatherForGivenCoordinatesAndDate(longitude, latitude, resultDate)
+//                .forEach(System.out::println);
     }
 
-    private void displayDistinctCoordinates() {
-        System.out.println("Available coordinates: ");
-        System.out.println(weatherService.displayDistinctCoordinates());
+    //------------------------------------------------Additional methods------------------------------------------------
+
+    private boolean displayDistinctCityNames() {
+        if (weatherService.findDistinctCityNames().isEmpty()) {
+            System.out.println("NO DISTINCT CITIES FOUND!");
+            return false;
+        } else {
+            System.out.println("AVAILABLE CITIES: ");
+            System.out.println(weatherService.findDistinctCityNames());
+            return true;
+        }
     }
 
+    private boolean displayDistinctCoordinates() {
+        if (weatherService.findDistinctCoordinates().isEmpty()) {
+            System.out.println("NO DISTINCT COORDINATES FOUND!");
+            return false;
+        } else {
+            System.out.println("AVAILABLE COORDINATES: ");
+            System.out.println(weatherService.findDistinctCoordinates());
+            return true;
+        }
+    }
+
+    private boolean displayAllIds() {
+        if (weatherService.findAllIds().isEmpty()) {
+            System.out.println("NO IDS FOUND!");
+            return false;
+        } else {
+            System.out.println("AVAILABLE IDS: ");
+            System.out.println(weatherService.findAllIds());
+            return true;
+        }
+    }
 }
